@@ -11,7 +11,7 @@
     <h1>Mental Math</h1>
 
     <div id="start-screen">
-      <p>Solve as many addition problems as you can in 30 seconds.</p>
+      <p>Solve as many problems as you can in 30 seconds.</p>
       <p class="level">Level: <span id="current-level">1</span> <span id="level-delta"></span></p>
       <p id="last-score" class="last-score hidden">Last score: <span id="last-score-value">0</span></p>
       <button onclick="startGame()">Start</button>
@@ -24,7 +24,9 @@
       <div class="score">Score: <span id="score">0</span></div>
       <div id="debug-panel" class="debug">
         <span class="debug-label">DEBUG</span>
-        <div>Difficulty: <span id="debug-difficulty">1.0</span> <span id="debug-delta"></span></div>
+        <div>Addition: <span id="debug-addition">1.0</span></div>
+        <div>Subtraction: <span id="debug-subtraction">1.0</span></div>
+        <div><span id="debug-delta"></span></div>
         <div class="debug-controls">
           <button onclick="adjustDifficulty(-1)" class="debug-btn">-1</button>
           <button onclick="adjustDifficulty(1)" class="debug-btn">+1</button>
@@ -40,12 +42,23 @@
     let timer = null;
     let numbers = [];
     let correctAnswer = 0;
-    let difficulty = parseFloat(localStorage.getItem('mathLevel')) || 1.0;
-    let startingDifficulty = difficulty;
+    let currentOperation = '+';
+    let additionDifficulty = parseFloat(localStorage.getItem('additionLevel')) || 1.0;
+    let subtractionDifficulty = parseFloat(localStorage.getItem('subtractionLevel')) || 1.0;
+    let startingAdditionDifficulty = additionDifficulty;
+    let startingSubtractionDifficulty = subtractionDifficulty;
     let currentPuzzleDifficulty = 1.0;
     let problemStartTime = 0;
     const DEBUG = true;
     const TARGET_TIME = 4;
+
+    function getAverageLevel() {
+      return (additionDifficulty + subtractionDifficulty) / 2;
+    }
+
+    function getCurrentDifficulty() {
+      return currentOperation === '+' ? additionDifficulty : subtractionDifficulty;
+    }
 
     // Initialize level display
     updateLevelDisplay();
@@ -53,7 +66,8 @@
     function startGame() {
       score = 0;
       timeLeft = 30;
-      startingDifficulty = difficulty;
+      startingAdditionDifficulty = additionDifficulty;
+      startingSubtractionDifficulty = subtractionDifficulty;
 
       document.getElementById('start-screen').classList.add('hidden');
       document.getElementById('game-screen').classList.remove('hidden');
@@ -81,6 +95,10 @@
     }
 
     function generateProblem() {
+      // Randomly pick operation
+      currentOperation = Math.random() < 0.5 ? '+' : '-';
+      const difficulty = getCurrentDifficulty();
+
       // 10% chance of easy problem
       const isEasyProblem = Math.random() < 0.1;
       currentPuzzleDifficulty = isEasyProblem ? 1.0 : difficulty;
@@ -96,31 +114,55 @@
 
       numbers = [num1, num2];
 
-      // 10% chance: three-number addition
-      if (Math.random() < 0.1) {
-        const num3 = Math.floor(Math.random() * maxNum) + 1;
-        numbers.push(num3);
-      }
-
-      // 10% chance: challenge multiplier (double one number)
-      if (Math.random() < 0.1) {
-        const idx = Math.floor(Math.random() * numbers.length);
-        numbers[idx] = numbers[idx] * 2;
-      }
-
-      // 10% chance: round number anchor (replace one number with round number)
-      if (Math.random() < 0.1) {
-        const roundNumbers = [10, 20, 25, 50, 100].filter(n => n <= maxNum * 2);
-        if (roundNumbers.length > 0) {
-          const idx = Math.floor(Math.random() * numbers.length);
-          numbers[idx] = roundNumbers[Math.floor(Math.random() * roundNumbers.length)];
+      if (currentOperation === '+') {
+        // Addition-specific modifiers
+        // 10% chance: three-number addition
+        if (Math.random() < 0.1) {
+          const num3 = Math.floor(Math.random() * maxNum) + 1;
+          numbers.push(num3);
         }
+
+        // 10% chance: challenge multiplier (double one number)
+        if (Math.random() < 0.1) {
+          const idx = Math.floor(Math.random() * numbers.length);
+          numbers[idx] = numbers[idx] * 2;
+        }
+
+        // 10% chance: round number anchor (replace one number with round number)
+        if (Math.random() < 0.1) {
+          const roundNumbers = [10, 20, 25, 50, 100].filter(n => n <= maxNum * 2);
+          if (roundNumbers.length > 0) {
+            const idx = Math.floor(Math.random() * numbers.length);
+            numbers[idx] = roundNumbers[Math.floor(Math.random() * roundNumbers.length)];
+          }
+        }
+
+        correctAnswer = numbers.reduce((sum, n) => sum + n, 0);
+        document.getElementById('problem-text').textContent = numbers.join(' + ');
+      } else {
+        // Subtraction: ensure positive result (larger - smaller)
+        // 10% chance: challenge multiplier (double one number)
+        if (Math.random() < 0.1) {
+          const idx = Math.floor(Math.random() * numbers.length);
+          numbers[idx] = numbers[idx] * 2;
+        }
+
+        // 10% chance: round number anchor
+        if (Math.random() < 0.1) {
+          const roundNumbers = [10, 20, 25, 50, 100].filter(n => n <= maxNum * 2);
+          if (roundNumbers.length > 0) {
+            const idx = Math.floor(Math.random() * numbers.length);
+            numbers[idx] = roundNumbers[Math.floor(Math.random() * roundNumbers.length)];
+          }
+        }
+
+        // Sort descending to ensure positive result
+        numbers.sort((a, b) => b - a);
+        correctAnswer = numbers[0] - numbers[1];
+        document.getElementById('problem-text').textContent = numbers[0] + ' - ' + numbers[1];
       }
 
-      correctAnswer = numbers.reduce((sum, n) => sum + n, 0);
-      document.getElementById('problem-text').textContent = numbers.join(' + ');
       document.getElementById('answer').value = '';
-
       problemStartTime = Date.now();
     }
 
@@ -128,6 +170,7 @@
       const answer = parseInt(document.getElementById('answer').value);
       if (answer === correctAnswer) {
         const elapsed = (Date.now() - problemStartTime) / 1000;
+        const difficulty = getCurrentDifficulty();
 
         // Smooth difficulty adjustment
         const puzzleRatio = currentPuzzleDifficulty / difficulty;
@@ -135,17 +178,24 @@
         const timeMultiplier = Math.max(-1, Math.min(1, -timeDelta / 3));
         const baseAdjustment = 0.25 * timeMultiplier;
 
-        const oldDifficulty = difficulty;
+        let delta = 0;
         if (baseAdjustment > 0) {
           // Only increase difficulty if puzzle was at least half current difficulty
           if (puzzleRatio >= 0.5) {
-            difficulty = difficulty + baseAdjustment * puzzleRatio;
+            delta = baseAdjustment * puzzleRatio;
           }
         } else {
           // Always allow decreases
-          difficulty = Math.max(1.0, difficulty + baseAdjustment);
+          delta = baseAdjustment;
         }
-        updateDebug(difficulty - oldDifficulty);
+
+        // Apply delta to correct difficulty
+        if (currentOperation === '+') {
+          additionDifficulty = Math.max(1.0, additionDifficulty + delta);
+        } else {
+          subtractionDifficulty = Math.max(1.0, subtractionDifficulty + delta);
+        }
+        updateDebug(delta);
 
         // Score based on difficulty
         score += Math.floor(difficulty);
@@ -159,12 +209,13 @@
 
     function updateDebug(delta = null) {
       if (!DEBUG) return;
-      document.getElementById('debug-difficulty').textContent = difficulty.toFixed(1);
+      document.getElementById('debug-addition').textContent = additionDifficulty.toFixed(1);
+      document.getElementById('debug-subtraction').textContent = subtractionDifficulty.toFixed(1);
 
       if (delta !== null && delta !== 0) {
         const deltaEl = document.getElementById('debug-delta');
         const sign = delta > 0 ? '+' : '';
-        deltaEl.textContent = sign + delta.toFixed(2);
+        deltaEl.textContent = '(' + currentOperation + ') ' + sign + delta.toFixed(2);
         deltaEl.classList.add('visible');
 
         clearTimeout(debugDeltaTimeout);
@@ -175,25 +226,29 @@
     }
 
     function updateLevelDisplay() {
-      document.getElementById('current-level').textContent = Math.floor(difficulty);
+      document.getElementById('current-level').textContent = Math.floor(getAverageLevel());
     }
 
     function adjustDifficulty(amount) {
-      const oldDifficulty = difficulty;
-      difficulty = Math.max(1.0, difficulty + amount);
-      updateDebug(difficulty - oldDifficulty);
+      if (currentOperation === '+') {
+        additionDifficulty = Math.max(1.0, additionDifficulty + amount);
+      } else {
+        subtractionDifficulty = Math.max(1.0, subtractionDifficulty + amount);
+      }
+      updateDebug(amount);
       generateProblem();
       document.getElementById('answer').focus();
     }
 
     function endGame() {
       clearInterval(timer);
-      localStorage.setItem('mathLevel', difficulty.toFixed(2));
+      localStorage.setItem('additionLevel', additionDifficulty.toFixed(2));
+      localStorage.setItem('subtractionLevel', subtractionDifficulty.toFixed(2));
       updateLevelDisplay();
 
-      // Show level change (whole numbers only)
-      const oldLevel = Math.floor(startingDifficulty);
-      const newLevel = Math.floor(difficulty);
+      // Show level change (whole numbers only, based on average)
+      const oldLevel = Math.floor((startingAdditionDifficulty + startingSubtractionDifficulty) / 2);
+      const newLevel = Math.floor(getAverageLevel());
       const levelDelta = newLevel - oldLevel;
       const deltaEl = document.getElementById('level-delta');
       if (levelDelta !== 0) {
