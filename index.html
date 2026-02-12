@@ -25,7 +25,7 @@
     <div id="end-screen" class="hidden">
       <div class="result">
         <p>Time's up!</p>
-        <p>You solved <strong id="final-score">0</strong> problems correctly.</p>
+        <p>Final score: <strong id="final-score">0</strong></p>
       </div>
       <button onclick="startGame()">Play Again</button>
     </div>
@@ -36,10 +36,13 @@
     let timeLeft = 30;
     let timer = null;
     let num1, num2;
+    let difficulty = 1.0;
+    let problemStartTime = 0;
 
     function startGame() {
       score = 0;
       timeLeft = 30;
+      difficulty = 1.0;
 
       document.getElementById('start-screen').classList.add('hidden');
       document.getElementById('end-screen').classList.add('hidden');
@@ -62,18 +65,39 @@
     }
 
     function generateProblem() {
-      num1 = Math.floor(Math.random() * 10) + 1;
-      num2 = Math.floor(Math.random() * 10) + 1;
+      // 10% chance of easy problem
+      const isEasyProblem = Math.random() < 0.1;
+      const effectiveDifficulty = isEasyProblem ? 1.0 : difficulty;
+
+      const minNum = 1 + Math.floor(effectiveDifficulty);
+      const maxNum = 5 + Math.floor(effectiveDifficulty * 2);
+
+      num1 = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
+      num2 = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
+
       document.getElementById('num1').textContent = num1;
       document.getElementById('num2').textContent = num2;
       document.getElementById('answer').value = '';
+
+      problemStartTime = Date.now();
     }
 
     function checkAnswer() {
       const answer = parseInt(document.getElementById('answer').value);
       if (answer === num1 + num2) {
-        score++;
+        const elapsed = (Date.now() - problemStartTime) / 1000;
+
+        // Adjust difficulty based on answer time
+        if (elapsed < 3) {
+          difficulty = Math.min(10.0, difficulty + 0.3);
+        } else if (elapsed > 5) {
+          difficulty = Math.max(1.0, difficulty - 0.2);
+        }
+
+        // Score based on difficulty
+        score += Math.floor(difficulty);
         document.getElementById('score').textContent = score;
+
         generateProblem();
       }
     }

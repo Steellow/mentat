@@ -10,10 +10,20 @@
 ## Features
 
 - 30-second timed mental math game
-- Random addition problems (numbers 1-10)
-- Real-time score tracking
+- Random addition problems with adaptive difficulty
 - Auto-submit on correct answer (no Enter needed)
 - Play again option after game ends
+
+## Difficulty System
+
+- Difficulty ranges from 1.0 to 10.0 (starts at 1.0)
+- Fast answer (< 3s): difficulty += 0.3
+- Slow answer (> 5s): difficulty -= 0.2
+- Number range scales with difficulty:
+  - Min: 1 + floor(difficulty)
+  - Max: 5 + floor(difficulty * 2)
+- Points per correct answer = floor(difficulty)
+- 10% chance of easy problem (base difficulty) for variety
 
 ## Architecture
 
