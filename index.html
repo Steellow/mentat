@@ -23,6 +23,7 @@
       <div id="debug-panel" class="debug">
         <span class="debug-label">DEBUG</span>
         <div>Difficulty: <span id="debug-difficulty">1.0</span></div>
+        <button onclick="endGame()" class="debug-btn">End Game</button>
       </div>
     </div>
 
@@ -63,14 +64,16 @@
       generateProblem();
       document.getElementById('answer').focus();
 
-      timer = setInterval(() => {
-        timeLeft--;
-        document.getElementById('time').textContent = timeLeft;
+      if (!DEBUG) {
+        timer = setInterval(() => {
+          timeLeft--;
+          document.getElementById('time').textContent = timeLeft;
 
-        if (timeLeft <= 0) {
-          endGame();
-        }
-      }, 1000);
+          if (timeLeft <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
     }
 
     function generateProblem() {
