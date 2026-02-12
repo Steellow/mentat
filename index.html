@@ -20,6 +20,10 @@
       <div class="problem"><span id="num1">0</span> + <span id="num2">0</span> = ?</div>
       <input type="number" id="answer" autofocus oninput="checkAnswer()">
       <div class="score">Score: <span id="score">0</span></div>
+      <div id="debug-panel" class="debug">
+        <span class="debug-label">DEBUG</span>
+        <div>Difficulty: <span id="debug-difficulty">1.0</span></div>
+      </div>
     </div>
 
     <div id="end-screen" class="hidden">
@@ -38,6 +42,7 @@
     let num1, num2;
     let difficulty = 1.0;
     let problemStartTime = 0;
+    const DEBUG = true;
 
     function startGame() {
       score = 0;
@@ -50,6 +55,10 @@
 
       document.getElementById('score').textContent = score;
       document.getElementById('time').textContent = timeLeft;
+
+      // Debug panel visibility
+      document.getElementById('debug-panel').classList.toggle('hidden', !DEBUG);
+      updateDebug();
 
       generateProblem();
       document.getElementById('answer').focus();
@@ -93,6 +102,7 @@
         } else if (elapsed > 5) {
           difficulty = Math.max(1.0, difficulty - 0.2);
         }
+        updateDebug();
 
         // Score based on difficulty
         score += Math.floor(difficulty);
@@ -100,6 +110,11 @@
 
         generateProblem();
       }
+    }
+
+    function updateDebug() {
+      if (!DEBUG) return;
+      document.getElementById('debug-difficulty').textContent = difficulty.toFixed(1);
     }
 
     function endGame() {

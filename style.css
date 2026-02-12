@@ -86,3 +86,23 @@ button:hover {
 .hidden {
   display: none;
 }
+
+/* Debug elements */
+.debug {
+  margin-top: 2em;
+  padding: 0.75em;
+  border: 1px dashed #e5c07b;
+  background-color: rgba(229, 192, 123, 0.1);
+  color: #e5c07b;
+  font-family: monospace;
+  font-size: 0.85em;
+}
+
+.debug-label {
+  background-color: #e5c07b;
+  color: #1e1e1e;
+  padding: 2px 6px;
+  font-size: 0.7em;
+  font-weight: bold;
+  margin-right: 0.5em;
+}
