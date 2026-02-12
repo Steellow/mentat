@@ -19,7 +19,7 @@
 
     <div id="game-screen" class="hidden">
       <div class="timer hidden">Time: <span id="time">30</span>s</div>
-      <div class="problem"><span id="num1">0</span> + <span id="num2">0</span> = ?</div>
+      <div class="problem"><span id="problem-text">0 + 0</span> = ?</div>
       <input type="number" id="answer" autofocus oninput="checkAnswer()">
       <div class="score">Score: <span id="score">0</span></div>
       <div id="debug-panel" class="debug">
@@ -32,14 +32,14 @@
         </div>
       </div>
     </div>
-
-      </div>
+  </div>
 
   <script>
     let score = 0;
     let timeLeft = 30;
     let timer = null;
-    let num1, num2;
+    let numbers = [];
+    let correctAnswer = 0;
     let difficulty = parseFloat(localStorage.getItem('mathLevel')) || 1.0;
     let startingDifficulty = difficulty;
     let currentPuzzleDifficulty = 1.0;
@@ -88,11 +88,37 @@
       const minNum = 1 + Math.floor(currentPuzzleDifficulty);
       const maxNum = 5 + Math.floor(currentPuzzleDifficulty * 2);
 
-      num1 = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
-      num2 = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
+      // Generate first number (scales with difficulty)
+      let num1 = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
 
-      document.getElementById('num1').textContent = num1;
-      document.getElementById('num2').textContent = num2;
+      // Second number has wider range (1 to max)
+      let num2 = Math.floor(Math.random() * maxNum) + 1;
+
+      numbers = [num1, num2];
+
+      // 10% chance: three-number addition
+      if (Math.random() < 0.1) {
+        const num3 = Math.floor(Math.random() * maxNum) + 1;
+        numbers.push(num3);
+      }
+
+      // 10% chance: challenge multiplier (double one number)
+      if (Math.random() < 0.1) {
+        const idx = Math.floor(Math.random() * numbers.length);
+        numbers[idx] = numbers[idx] * 2;
+      }
+
+      // 10% chance: round number anchor (replace one number with round number)
+      if (Math.random() < 0.1) {
+        const roundNumbers = [10, 20, 25, 50, 100].filter(n => n <= maxNum * 2);
+        if (roundNumbers.length > 0) {
+          const idx = Math.floor(Math.random() * numbers.length);
+          numbers[idx] = roundNumbers[Math.floor(Math.random() * roundNumbers.length)];
+        }
+      }
+
+      correctAnswer = numbers.reduce((sum, n) => sum + n, 0);
+      document.getElementById('problem-text').textContent = numbers.join(' + ');
       document.getElementById('answer').value = '';
 
       problemStartTime = Date.now();
@@ -100,7 +126,7 @@
 
     function checkAnswer() {
       const answer = parseInt(document.getElementById('answer').value);
-      if (answer === num1 + num2) {
+      if (answer === correctAnswer) {
         const elapsed = (Date.now() - problemStartTime) / 1000;
 
         // Smooth difficulty adjustment
@@ -113,7 +139,7 @@
         if (baseAdjustment > 0) {
           // Only increase difficulty if puzzle was at least half current difficulty
           if (puzzleRatio >= 0.5) {
-            difficulty = Math.min(10.0, difficulty + baseAdjustment * puzzleRatio);
+            difficulty = difficulty + baseAdjustment * puzzleRatio;
           }
         } else {
           // Always allow decreases
@@ -154,7 +180,7 @@
 
     function adjustDifficulty(amount) {
       const oldDifficulty = difficulty;
-      difficulty = Math.max(1.0, Math.min(10.0, difficulty + amount));
+      difficulty = Math.max(1.0, difficulty + amount);
       updateDebug(difficulty - oldDifficulty);
       generateProblem();
       document.getElementById('answer').focus();
