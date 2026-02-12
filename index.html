@@ -11,17 +11,20 @@
     <h1>Mental Math</h1>
 
     <div id="start-screen">
-      <p>Solve as many problems as you can in 30 seconds.</p>
+      <p>Solve as many problems as you can in 2 minutes.</p>
       <p class="level">Level: <span id="current-level">1</span> <span id="level-delta"></span></p>
       <p id="last-score" class="last-score hidden">Last score: <span id="last-score-value">0</span></p>
       <button onclick="startGame()">Start</button>
+      <div id="debug-toggle" class="debug">
+        <label><input type="checkbox" id="debug-checkbox" onchange="toggleDebug()"> Debug mode</label>
+      </div>
     </div>
 
     <div id="game-screen" class="hidden">
       <div class="timer hidden">Time: <span id="time">30</span>s</div>
       <div class="problem"><span id="problem-text">0 + 0</span> = ?</div>
       <input type="number" id="answer" autofocus oninput="checkAnswer()">
-      <div class="score">Score: <span id="score">0</span></div>
+      <div class="score hidden">Score: <span id="score">0</span></div>
       <div id="debug-panel" class="debug">
         <span class="debug-label">DEBUG</span>
         <div>Addition: <span id="debug-addition">1.0</span></div>
@@ -49,8 +52,16 @@
     let startingSubtractionDifficulty = subtractionDifficulty;
     let currentPuzzleDifficulty = 1.0;
     let problemStartTime = 0;
-    const DEBUG = true;
+    let DEBUG = localStorage.getItem('debugMode') === 'true';
     const TARGET_TIME = 4;
+
+    // Initialize debug checkbox
+    document.getElementById('debug-checkbox').checked = DEBUG;
+
+    function toggleDebug() {
+      DEBUG = document.getElementById('debug-checkbox').checked;
+      localStorage.setItem('debugMode', DEBUG);
+    }
 
     function getAverageLevel() {
       return (additionDifficulty + subtractionDifficulty) / 2;
@@ -65,7 +76,7 @@
 
     function startGame() {
       score = 0;
-      timeLeft = 30;
+      timeLeft = 120;
       startingAdditionDifficulty = additionDifficulty;
       startingSubtractionDifficulty = subtractionDifficulty;
 

@@ -111,6 +111,21 @@ button:hover {
   font-size: 0.85em;
 }
 
+#debug-toggle {
+  border: none;
+  background: none;
+  padding: 0;
+  margin-top: 1.5em;
+}
+
+#debug-toggle label {
+  cursor: pointer;
+  border: 1px dashed #e5c07b;
+  background-color: rgba(229, 192, 123, 0.1);
+  padding: 0.5em 0.75em;
+  display: inline-block;
+}
+
 .debug-label {
   background-color: #e5c07b;
   color: #1e1e1e;
