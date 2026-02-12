@@ -4,96 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mental Math</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      background-color: #1e1e1e;
-      color: #dcddde;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 500px;
-      width: 100%;
-      line-height: 1.6;
-    }
-
-    h1 {
-      color: #dcddde;
-      font-weight: 600;
-      margin-bottom: 1em;
-      border-bottom: 1px solid #3e3e3e;
-      padding-bottom: 0.5em;
-    }
-
-    .timer {
-      color: #a88bfa;
-      font-size: 1.2em;
-      margin-bottom: 1.5em;
-    }
-
-    .problem {
-      font-size: 2em;
-      margin: 1em 0;
-      font-family: monospace;
-    }
-
-    input {
-      background-color: #2b2b2b;
-      border: 1px solid #3e3e3e;
-      color: #dcddde;
-      padding: 8px 12px;
-      font-size: 1.2em;
-      width: 100px;
-      border-radius: 4px;
-      outline: none;
-    }
-
-    input:focus {
-      border-color: #a88bfa;
-    }
-
-    button {
-      background-color: #483699;
-      color: #dcddde;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1em;
-      cursor: pointer;
-      border-radius: 4px;
-      margin-top: 1em;
-    }
-
-    button:hover {
-      background-color: #5b44b8;
-    }
-
-    .score {
-      margin-top: 1em;
-      color: #8b8b8b;
-    }
-
-    .result {
-      margin-top: 2em;
-      padding: 1em;
-      background-color: #2b2b2b;
-      border-left: 3px solid #a88bfa;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
@@ -107,7 +18,7 @@
     <div id="game-screen" class="hidden">
       <div class="timer">Time: <span id="time">30</span>s</div>
       <div class="problem"><span id="num1">0</span> + <span id="num2">0</span> = ?</div>
-      <input type="number" id="answer" autofocus onkeydown="checkEnter(event)">
+      <input type="number" id="answer" autofocus oninput="checkAnswer()">
       <div class="score">Score: <span id="score">0</span></div>
     </div>
 
@@ -158,13 +69,11 @@
       document.getElementById('answer').value = '';
     }
 
-    function checkEnter(event) {
-      if (event.key === 'Enter') {
-        const answer = parseInt(document.getElementById('answer').value);
-        if (answer === num1 + num2) {
-          score++;
-          document.getElementById('score').textContent = score;
-        }
+    function checkAnswer() {
+      const answer = parseInt(document.getElementById('answer').value);
+      if (answer === num1 + num2) {
+        score++;
+        document.getElementById('score').textContent = score;
         generateProblem();
       }
     }

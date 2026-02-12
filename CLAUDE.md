@@ -12,14 +12,13 @@
 - 30-second timed mental math game
 - Random addition problems (numbers 1-10)
 - Real-time score tracking
-- Press Enter to submit answers
+- Auto-submit on correct answer (no Enter needed)
 - Play again option after game ends
 
 ## Architecture
 
-Single `index.html` file containing:
-- Embedded CSS with Obsidian-inspired dark theme
-- Inline JavaScript for game logic
+- `index.html` - HTML structure and inline JavaScript
+- `style.css` - Obsidian-inspired dark theme styles
 - Three screens: start, game, end (toggled via CSS classes)
 
 ## UI Style
