@@ -17,8 +17,13 @@
 ## Difficulty System
 
 - Difficulty ranges from 1.0 to 10.0 (starts at 1.0)
-- Fast answer (< 3s): difficulty += 0.3
-- Slow answer (> 5s): difficulty -= 0.2
+- Target answer time: 4 seconds
+- Smooth scaling based on answer time:
+  - Time multiplier = clamp((targetTime - elapsed) / 3, -1, 1)
+  - Base adjustment = 0.25 * timeMultiplier
+- Difficulty increases only if puzzle was at least 50% of current difficulty
+  - Increase scaled by puzzleRatio (harder puzzles = bigger boost)
+- Difficulty decreases always apply fully
 - Number range scales with difficulty:
   - Min: 1 + floor(difficulty)
   - Max: 5 + floor(difficulty * 2)

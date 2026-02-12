@@ -42,8 +42,10 @@
     let timer = null;
     let num1, num2;
     let difficulty = 1.0;
+    let currentPuzzleDifficulty = 1.0;
     let problemStartTime = 0;
     const DEBUG = true;
+    const TARGET_TIME = 4;
 
     function startGame() {
       score = 0;
@@ -79,10 +81,10 @@
     function generateProblem() {
       // 10% chance of easy problem
       const isEasyProblem = Math.random() < 0.1;
-      const effectiveDifficulty = isEasyProblem ? 1.0 : difficulty;
+      currentPuzzleDifficulty = isEasyProblem ? 1.0 : difficulty;
 
-      const minNum = 1 + Math.floor(effectiveDifficulty);
-      const maxNum = 5 + Math.floor(effectiveDifficulty * 2);
+      const minNum = 1 + Math.floor(currentPuzzleDifficulty);
+      const maxNum = 5 + Math.floor(currentPuzzleDifficulty * 2);
 
       num1 = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
       num2 = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
@@ -99,11 +101,20 @@
       if (answer === num1 + num2) {
         const elapsed = (Date.now() - problemStartTime) / 1000;
 
-        // Adjust difficulty based on answer time
-        if (elapsed < 3) {
-          difficulty = Math.min(10.0, difficulty + 0.3);
-        } else if (elapsed > 5) {
-          difficulty = Math.max(1.0, difficulty - 0.2);
+        // Smooth difficulty adjustment
+        const puzzleRatio = currentPuzzleDifficulty / difficulty;
+        const timeDelta = elapsed - TARGET_TIME; // negative = fast, positive = slow
+        const timeMultiplier = Math.max(-1, Math.min(1, -timeDelta / 3));
+        const baseAdjustment = 0.25 * timeMultiplier;
+
+        if (baseAdjustment > 0) {
+          // Only increase difficulty if puzzle was at least half current difficulty
+          if (puzzleRatio >= 0.5) {
+            difficulty = Math.min(10.0, difficulty + baseAdjustment * puzzleRatio);
+          }
+        } else {
+          // Always allow decreases
+          difficulty = Math.max(1.0, difficulty + baseAdjustment);
         }
         updateDebug();
 
