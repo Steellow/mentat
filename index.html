@@ -22,7 +22,7 @@
       <div class="score">Score: <span id="score">0</span></div>
       <div id="debug-panel" class="debug">
         <span class="debug-label">DEBUG</span>
-        <div>Difficulty: <span id="debug-difficulty">1.0</span></div>
+        <div>Difficulty: <span id="debug-difficulty">1.0</span> <span id="debug-delta"></span></div>
         <button onclick="endGame()" class="debug-btn">End Game</button>
       </div>
     </div>
@@ -107,6 +107,7 @@
         const timeMultiplier = Math.max(-1, Math.min(1, -timeDelta / 3));
         const baseAdjustment = 0.25 * timeMultiplier;
 
+        const oldDifficulty = difficulty;
         if (baseAdjustment > 0) {
           // Only increase difficulty if puzzle was at least half current difficulty
           if (puzzleRatio >= 0.5) {
@@ -116,7 +117,7 @@
           // Always allow decreases
           difficulty = Math.max(1.0, difficulty + baseAdjustment);
         }
-        updateDebug();
+        updateDebug(difficulty - oldDifficulty);
 
         // Score based on difficulty
         score += Math.floor(difficulty);
@@ -126,9 +127,23 @@
       }
     }
 
-    function updateDebug() {
+    let debugDeltaTimeout = null;
+
+    function updateDebug(delta = null) {
       if (!DEBUG) return;
       document.getElementById('debug-difficulty').textContent = difficulty.toFixed(1);
+
+      if (delta !== null && delta !== 0) {
+        const deltaEl = document.getElementById('debug-delta');
+        const sign = delta > 0 ? '+' : '';
+        deltaEl.textContent = sign + delta.toFixed(2);
+        deltaEl.classList.add('visible');
+
+        clearTimeout(debugDeltaTimeout);
+        debugDeltaTimeout = setTimeout(() => {
+          deltaEl.classList.remove('visible');
+        }, 800);
+      }
     }
 
     function endGame() {

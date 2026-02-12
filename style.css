@@ -120,3 +120,14 @@ button:hover {
   background-color: #e5c07b;
   color: #1e1e1e;
 }
+
+#debug-delta {
+  color: #98c379;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  margin-left: 0.5em;
+}
+
+#debug-delta.visible {
+  opacity: 1;
+}
