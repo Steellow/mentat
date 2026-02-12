@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mental Math</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #1e1e1e;
+      color: #dcddde;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      width: 100%;
+      line-height: 1.6;
+    }
+
+    h1 {
+      color: #dcddde;
+      font-weight: 600;
+      margin-bottom: 1em;
+      border-bottom: 1px solid #3e3e3e;
+      padding-bottom: 0.5em;
+    }
+
+    .timer {
+      color: #a88bfa;
+      font-size: 1.2em;
+      margin-bottom: 1.5em;
+    }
+
+    .problem {
+      font-size: 2em;
+      margin: 1em 0;
+      font-family: monospace;
+    }
+
+    input {
+      background-color: #2b2b2b;
+      border: 1px solid #3e3e3e;
+      color: #dcddde;
+      padding: 8px 12px;
+      font-size: 1.2em;
+      width: 100px;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #a88bfa;
+    }
+
+    button {
+      background-color: #483699;
+      color: #dcddde;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-top: 1em;
+    }
+
+    button:hover {
+      background-color: #5b44b8;
+    }
+
+    .score {
+      margin-top: 1em;
+      color: #8b8b8b;
+    }
+
+    .result {
+      margin-top: 2em;
+      padding: 1em;
+      background-color: #2b2b2b;
+      border-left: 3px solid #a88bfa;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mental Math</h1>
+
+    <div id="start-screen">
+      <p>Solve as many addition problems as you can in 30 seconds.</p>
+      <button onclick="startGame()">Start</button>
+    </div>
+
+    <div id="game-screen" class="hidden">
+      <div class="timer">Time: <span id="time">30</span>s</div>
+      <div class="problem"><span id="num1">0</span> + <span id="num2">0</span> = ?</div>
+      <input type="number" id="answer" autofocus onkeydown="checkEnter(event)">
+      <div class="score">Score: <span id="score">0</span></div>
+    </div>
+
+    <div id="end-screen" class="hidden">
+      <div class="result">
+        <p>Time's up!</p>
+        <p>You solved <strong id="final-score">0</strong> problems correctly.</p>
+      </div>
+      <button onclick="startGame()">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    let score = 0;
+    let timeLeft = 30;
+    let timer = null;
+    let num1, num2;
+
+    function startGame() {
+      score = 0;
+      timeLeft = 30;
+
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('end-screen').classList.add('hidden');
+      document.getElementById('game-screen').classList.remove('hidden');
+
+      document.getElementById('score').textContent = score;
+      document.getElementById('time').textContent = timeLeft;
+
+      generateProblem();
+      document.getElementById('answer').focus();
+
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('time').textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function generateProblem() {
+      num1 = Math.floor(Math.random() * 10) + 1;
+      num2 = Math.floor(Math.random() * 10) + 1;
+      document.getElementById('num1').textContent = num1;
+      document.getElementById('num2').textContent = num2;
+      document.getElementById('answer').value = '';
+    }
+
+    function checkEnter(event) {
+      if (event.key === 'Enter') {
+        const answer = parseInt(document.getElementById('answer').value);
+        if (answer === num1 + num2) {
+          score++;
+          document.getElementById('score').textContent = score;
+        }
+        generateProblem();
+      }
+    }
+
+    function endGame() {
+      clearInterval(timer);
+      document.getElementById('game-screen').classList.add('hidden');
+      document.getElementById('end-screen').classList.remove('hidden');
+      document.getElementById('final-score').textContent = score;
+    }
+  </script>
+</body>
+</html>
