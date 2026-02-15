@@ -38,6 +38,7 @@
 - Subtraction generates answer first (minNum to maxNum*2), then constructs num1 = answer + num2
 - 10% chance modifiers (each rolled independently):
   - Easy problem: uses half current difficulty (minimum 1.0), never increases level
+  - Hard problem: 2-5x current difficulty, points and target time scale with multiplier
   - Three-number problem: adds a third number (works on both + and -)
   - Challenge multiplier: doubles one random number
   - Round number anchor: replaces one number with 10, 20, 25, 50, or 100

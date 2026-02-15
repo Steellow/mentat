@@ -291,6 +291,13 @@ button:hover {
   margin-right: 0.5em;
 }
 
+.debug-modifiers {
+  color: #00ff88;
+  font-size: 0.85em;
+  margin-top: 0.5em;
+  min-height: 1.2em;
+}
+
 .debug-controls {
   display: flex;
   gap: 0.5em;

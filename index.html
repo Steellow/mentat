@@ -37,6 +37,7 @@
         <div>Addition: <span id="debug-addition">1.0</span></div>
         <div>Subtraction: <span id="debug-subtraction">1.0</span></div>
         <div><span id="debug-delta"></span></div>
+        <div id="debug-modifiers" class="debug-modifiers"></div>
         <div class="debug-controls">
           <label><input type="checkbox" id="debug-addition-enabled" checked> +</label>
           <label><input type="checkbox" id="debug-subtraction-enabled" checked> −</label>
@@ -66,6 +67,8 @@
     let startingSubtractionDifficulty = subtractionDifficulty;
     let currentPuzzleDifficulty = 1.0;
     let isEasyProblem = false;
+    let hardMultiplier = 1;
+    let activeModifiers = [];
     let problemStartTime = 0;
     let DEBUG = localStorage.getItem('debugMode') === 'true';
     let gameResponseTimes = [];
@@ -159,9 +162,24 @@
       }
       const difficulty = getCurrentDifficulty();
 
+      // Reset modifiers
+      activeModifiers = [];
+
       // 10% chance of easy problem (half current difficulty)
+      // 10% chance of hard problem (2-5x current difficulty) - mutually exclusive with easy
       isEasyProblem = Math.random() < 0.1;
-      currentPuzzleDifficulty = isEasyProblem ? Math.max(1, difficulty / 2) : difficulty;
+      const isHardProblem = !isEasyProblem && Math.random() < 0.1;
+      hardMultiplier = isHardProblem ? Math.floor(Math.random() * 4) + 2 : 1; // 2-5x
+
+      if (isEasyProblem) {
+        currentPuzzleDifficulty = Math.max(1, difficulty / 2);
+        activeModifiers.push('easy');
+      } else if (isHardProblem) {
+        currentPuzzleDifficulty = difficulty * hardMultiplier;
+        activeModifiers.push('hard ' + hardMultiplier + 'x');
+      } else {
+        currentPuzzleDifficulty = difficulty;
+      }
 
       const minNum = 1 + Math.floor(currentPuzzleDifficulty);
       const maxNum = 5 + Math.floor(currentPuzzleDifficulty * 2);
@@ -179,6 +197,7 @@
       if (isThreeNumber) {
         const num3 = Math.floor(Math.random() * maxNum) + 1;
         numbers.push(num3);
+        activeModifiers.push('3 nums');
       }
 
       if (currentOperation === '+') {
@@ -186,6 +205,7 @@
         if (Math.random() < 0.1) {
           const idx = Math.floor(Math.random() * numbers.length);
           numbers[idx] = numbers[idx] * 2;
+          activeModifiers.push('x2');
         }
 
         // 10% chance: round number anchor (replace one number with round number)
@@ -194,6 +214,7 @@
           if (roundNumbers.length > 0) {
             const idx = Math.floor(Math.random() * numbers.length);
             numbers[idx] = roundNumbers[Math.floor(Math.random() * roundNumbers.length)];
+            activeModifiers.push('round');
           }
         }
 
@@ -216,6 +237,7 @@
         if (Math.random() < 0.1) {
           const idx = Math.floor(Math.random() * numbers.length);
           numbers[idx] = numbers[idx] * 2;
+          activeModifiers.push('x2');
         }
 
         // 10% chance: round number anchor
@@ -224,6 +246,7 @@
           if (roundNumbers.length > 0) {
             const idx = Math.floor(Math.random() * numbers.length);
             numbers[idx] = roundNumbers[Math.floor(Math.random() * roundNumbers.length)];
+            activeModifiers.push('round');
           }
         }
 
@@ -232,6 +255,7 @@
         const subtractTotal = numbers.slice(1).reduce((sum, n) => sum + n, 0);
 
         if (allowNegative) {
+          activeModifiers.push('negative');
           // Ensure negative result
           if (numbers[0] >= subtractTotal) {
             numbers[0] = Math.max(1, subtractTotal - Math.floor(Math.random() * maxNum) - 1);
@@ -248,6 +272,17 @@
 
       document.getElementById('answer').value = '';
       problemStartTime = Date.now();
+      updateDebugModifiers();
+    }
+
+    function updateDebugModifiers() {
+      if (!DEBUG) return;
+      const el = document.getElementById('debug-modifiers');
+      if (activeModifiers.length === 0) {
+        el.textContent = '';
+      } else {
+        el.textContent = '[' + activeModifiers.join('] [') + ']';
+      }
     }
 
     function checkAnswer() {
@@ -255,12 +290,13 @@
       if (answer === correctAnswer) {
         const elapsed = (Date.now() - problemStartTime) / 1000;
         const difficulty = getCurrentDifficulty();
-        const points = Math.floor(difficulty);
+        const points = Math.floor(difficulty) * hardMultiplier;
         const puzzleText = document.getElementById('problem-text').textContent;
         gameResponseTimes.push({ time: elapsed, puzzle: puzzleText, points: points });
 
-        // Smooth difficulty adjustment
-        const timeDelta = elapsed - TARGET_TIME; // negative = fast, positive = slow
+        // Smooth difficulty adjustment (target time scales with hard multiplier)
+        const adjustedTargetTime = TARGET_TIME * hardMultiplier;
+        const timeDelta = elapsed - adjustedTargetTime; // negative = fast, positive = slow
         const timeMultiplier = Math.max(-1, Math.min(1, -timeDelta / 3));
         let delta = 0.25 * timeMultiplier;
 
@@ -277,8 +313,8 @@
         }
         updateDebug(delta);
 
-        // Score based on difficulty
-        score += Math.floor(difficulty);
+        // Score based on difficulty (scaled by hard multiplier)
+        score += points;
         document.getElementById('score').textContent = score;
 
         // Track total puzzles solved
