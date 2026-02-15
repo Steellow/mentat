@@ -37,6 +37,8 @@
   <script>
     const additionLevel = parseFloat(localStorage.getItem('additionLevel')) || 1.0;
     const subtractionLevel = parseFloat(localStorage.getItem('subtractionLevel')) || 1.0;
+    const multiplicationLevel = parseFloat(localStorage.getItem('multiplicationLevel')) || 1.0;
+    const divisionLevel = parseFloat(localStorage.getItem('divisionLevel')) || 1.0;
     const totalPuzzles = parseInt(localStorage.getItem('totalPuzzlesSolved')) || 0;
 
     let topScores = [];
@@ -46,7 +48,7 @@
       topScores = [];
     }
 
-    const totalLevel = Math.floor((additionLevel + subtractionLevel) / 2);
+    const totalLevel = Math.floor((additionLevel + subtractionLevel + multiplicationLevel + divisionLevel) / 4);
     document.getElementById('total-level').textContent = totalLevel;
     document.getElementById('total-puzzles').textContent = totalPuzzles;
 

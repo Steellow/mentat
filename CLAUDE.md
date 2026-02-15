@@ -10,39 +10,47 @@
 ## Features
 
 - 1-minute timed mental math game (divider line shrinks as timer)
-- Random addition and subtraction problems
+- Four operations: addition, subtraction, multiplication, division
 - Separate difficulty tracking for each operation
 - Auto-submit on correct answer (no Enter needed)
 - Play again option after game ends
 - Stats page with top 10 scores, total puzzles solved, and level details
+- Post-game response time analysis with ASCII bar chart
 
 ## Difficulty System
 
-- Separate difficulty for addition and subtraction (both start at 1.0, no upper cap)
-- Both difficulties persisted to localStorage
-- Main page shows average level (floor of average)
-- Target answer time: 4 seconds
+- Separate difficulty for all 4 operations (each starts at 1.0, no upper cap)
+- All difficulties persisted to localStorage
+- Main page shows average level (floor of average of all 4)
+- Target answer time: 4 seconds (scales with hard multiplier)
 - Smooth scaling based on answer time:
   - Time multiplier = clamp((targetTime - elapsed) / 3, -1, 1)
-  - Base adjustment = 0.25 * timeMultiplier
-- Difficulty increases only if puzzle was at least 50% of current difficulty
-  - Increase scaled by puzzleRatio (harder puzzles = bigger boost)
-- Difficulty decreases always apply fully
-- Points per correct answer = floor(current operation's difficulty)
+  - Adjustment = 0.25 * timeMultiplier
+- Easy problems never increase difficulty
+- Points per correct answer = floor(difficulty) * hardMultiplier
 
 ## Number Generation
 
+### Addition/Subtraction
 - First number scales with difficulty: min = 1 + floor(diff), max = 5 + floor(diff * 2)
 - Second number has wider range: 1 to max (more variability)
-- Operation randomly selected (50/50 addition/subtraction)
 - Subtraction generates answer first (minNum to maxNum*2), then constructs num1 = answer + num2
-- 10% chance modifiers (each rolled independently):
-  - Easy problem: uses half current difficulty (minimum 1.0), never increases level
-  - Hard problem: 2-5x current difficulty, points and target time scale with multiplier
-  - Three-number problem: adds a third number (works on both + and -)
-  - Challenge multiplier: doubles one random number
-  - Round number anchor: replaces one number with 10, 20, 25, 50, or 100
-  - Negative result (subtraction only): answer is a negative number
+
+### Multiplication/Division
+- Smaller numbers to match addition difficulty: min = 2 + floor(diff/3), max = 4 + floor(diff/2)
+- Division generates answer and divisor, computes dividend (clean integer division)
+
+### Operation Selection
+- All 4 operations randomly selected (equal probability)
+- Debug mode allows filtering which operations appear
+
+### 10% Chance Modifiers (rolled independently)
+- Easy problem: uses half current difficulty (minimum 1.0), never increases level
+- Hard problem: 2-5x current difficulty, points and target time scale with multiplier
+- Three-number problem: adds a third number (addition/subtraction only)
+- Challenge multiplier: doubles one random number (addition/subtraction only)
+- Round number anchor: replaces one number with 10, 20, 25, 50, or 100 (addition/subtraction only)
+- Negative result (subtraction only): answer is a negative number
 
 ## Architecture
 
@@ -61,8 +69,10 @@
 ## Debug Mode
 
 - Toggle via settings page (stored in localStorage as `debugMode`)
-- Shows both addition and subtraction difficulties
+- Shows all 4 operation difficulties
 - Shows delta changes with operation indicator
+- Shows active modifiers for current puzzle
+- Checkboxes to enable/disable each operation type
 - Infinite time (no countdown)
 - Manual +1/-1 difficulty buttons (affects current operation)
 - End Game button

@@ -6,8 +6,7 @@ Mental math puzzles with auto-scaling difficulty. Made for fun for my own usage,
 
 ## Features
 
-- additions and subtractions supported
-    - multipliers and divisions coming
+- addition, subtraction, multiplication and division math puzzles
 - auto-scaling difficulty with level system
 - tracks high scores
 - supports custom keybindings

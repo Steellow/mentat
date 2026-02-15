@@ -34,13 +34,15 @@
       <div class="score hidden">Score: <span id="score">0</span></div>
       <div id="debug-panel" class="debug">
         <span class="debug-label">DEBUG</span>
-        <div>Addition: <span id="debug-addition">1.0</span></div>
-        <div>Subtraction: <span id="debug-subtraction">1.0</span></div>
+        <div>Addition: <span id="debug-addition">1.0</span> | Subtraction: <span id="debug-subtraction">1.0</span></div>
+        <div>Multiplication: <span id="debug-multiplication">1.0</span> | Division: <span id="debug-division">1.0</span></div>
         <div><span id="debug-delta"></span></div>
         <div id="debug-modifiers" class="debug-modifiers"></div>
         <div class="debug-controls">
           <label><input type="checkbox" id="debug-addition-enabled" checked> +</label>
           <label><input type="checkbox" id="debug-subtraction-enabled" checked> −</label>
+          <label><input type="checkbox" id="debug-multiplication-enabled" checked> ×</label>
+          <label><input type="checkbox" id="debug-division-enabled" checked> ÷</label>
         </div>
         <div class="debug-controls">
           <button onclick="adjustDifficulty(-1)" class="debug-btn">-1</button>
@@ -60,11 +62,15 @@
     let currentOperation = '+';
     let additionDifficulty = parseFloat(localStorage.getItem('additionLevel')) || 1.0;
     let subtractionDifficulty = parseFloat(localStorage.getItem('subtractionLevel')) || 1.0;
+    let multiplicationDifficulty = parseFloat(localStorage.getItem('multiplicationLevel')) || 1.0;
+    let divisionDifficulty = parseFloat(localStorage.getItem('divisionLevel')) || 1.0;
     let topScores = JSON.parse(localStorage.getItem('topScores')) || [];
     let totalPuzzlesSolved = parseInt(localStorage.getItem('totalPuzzlesSolved')) || 0;
     let keyBindings = JSON.parse(localStorage.getItem('keyBindings')) || {};
     let startingAdditionDifficulty = additionDifficulty;
     let startingSubtractionDifficulty = subtractionDifficulty;
+    let startingMultiplicationDifficulty = multiplicationDifficulty;
+    let startingDivisionDifficulty = divisionDifficulty;
     let currentPuzzleDifficulty = 1.0;
     let isEasyProblem = false;
     let hardMultiplier = 1;
@@ -86,11 +92,17 @@
     }
 
     function getAverageLevel() {
-      return (additionDifficulty + subtractionDifficulty) / 2;
+      return (additionDifficulty + subtractionDifficulty + multiplicationDifficulty + divisionDifficulty) / 4;
     }
 
     function getCurrentDifficulty() {
-      return currentOperation === '+' ? additionDifficulty : subtractionDifficulty;
+      switch (currentOperation) {
+        case '+': return additionDifficulty;
+        case '-': return subtractionDifficulty;
+        case '×': return multiplicationDifficulty;
+        case '÷': return divisionDifficulty;
+        default: return additionDifficulty;
+      }
     }
 
     // Initialize level display
@@ -119,6 +131,8 @@
       gameResponseTimes = [];
       startingAdditionDifficulty = additionDifficulty;
       startingSubtractionDifficulty = subtractionDifficulty;
+      startingMultiplicationDifficulty = multiplicationDifficulty;
+      startingDivisionDifficulty = divisionDifficulty;
 
       document.getElementById('start-screen').classList.add('hidden');
       document.getElementById('game-screen').classList.remove('hidden');
@@ -150,15 +164,19 @@
       // Randomly pick operation (respecting debug filters)
       const addEnabled = !DEBUG || document.getElementById('debug-addition-enabled').checked;
       const subEnabled = !DEBUG || document.getElementById('debug-subtraction-enabled').checked;
+      const mulEnabled = !DEBUG || document.getElementById('debug-multiplication-enabled').checked;
+      const divEnabled = !DEBUG || document.getElementById('debug-division-enabled').checked;
 
-      if (addEnabled && subEnabled) {
-        currentOperation = Math.random() < 0.5 ? '+' : '-';
-      } else if (addEnabled) {
-        currentOperation = '+';
-      } else if (subEnabled) {
-        currentOperation = '-';
+      const enabledOps = [];
+      if (addEnabled) enabledOps.push('+');
+      if (subEnabled) enabledOps.push('-');
+      if (mulEnabled) enabledOps.push('×');
+      if (divEnabled) enabledOps.push('÷');
+
+      if (enabledOps.length === 0) {
+        currentOperation = '+'; // fallback
       } else {
-        currentOperation = '+'; // fallback if both unchecked
+        currentOperation = enabledOps[Math.floor(Math.random() * enabledOps.length)];
       }
       const difficulty = getCurrentDifficulty();
 
@@ -181,8 +199,17 @@
         currentPuzzleDifficulty = difficulty;
       }
 
-      const minNum = 1 + Math.floor(currentPuzzleDifficulty);
-      const maxNum = 5 + Math.floor(currentPuzzleDifficulty * 2);
+      // Number scaling differs by operation type
+      let minNum, maxNum;
+      if (currentOperation === '×' || currentOperation === '÷') {
+        // Multiplication/division use smaller numbers
+        minNum = 2 + Math.floor(currentPuzzleDifficulty / 3);
+        maxNum = 4 + Math.floor(currentPuzzleDifficulty / 2);
+      } else {
+        // Addition/subtraction
+        minNum = 1 + Math.floor(currentPuzzleDifficulty);
+        maxNum = 5 + Math.floor(currentPuzzleDifficulty * 2);
+      }
 
       // Generate first number (scales with difficulty)
       let num1 = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
@@ -192,12 +219,14 @@
 
       numbers = [num1, num2];
 
-      // 10% chance: three-number problem
-      const isThreeNumber = Math.random() < 0.1;
-      if (isThreeNumber) {
-        const num3 = Math.floor(Math.random() * maxNum) + 1;
-        numbers.push(num3);
-        activeModifiers.push('3 nums');
+      // 10% chance: three-number problem (addition/subtraction only)
+      if (currentOperation === '+' || currentOperation === '-') {
+        const isThreeNumber = Math.random() < 0.1;
+        if (isThreeNumber) {
+          const num3 = Math.floor(Math.random() * maxNum) + 1;
+          numbers.push(num3);
+          activeModifiers.push('3 nums');
+        }
       }
 
       if (currentOperation === '+') {
@@ -220,9 +249,9 @@
 
         correctAnswer = numbers.reduce((sum, n) => sum + n, 0);
         document.getElementById('problem-text').textContent = numbers.join(' + ');
-      } else {
+
+      } else if (currentOperation === '-') {
         // Subtraction: generate answer first, then construct problem
-        // Answer scales similarly to addition results
         const targetAnswer = Math.floor(Math.random() * (maxNum * 2 - minNum + 1)) + minNum;
 
         // Generate the number we subtract
@@ -268,6 +297,22 @@
         }
         correctAnswer = numbers[0] - subtractTotal;
         document.getElementById('problem-text').textContent = numbers[0] + ' - ' + numbers.slice(1).join(' - ');
+
+      } else if (currentOperation === '×') {
+        // Multiplication
+        correctAnswer = num1 * num2;
+        numbers = [num1, num2];
+        document.getElementById('problem-text').textContent = num1 + ' × ' + num2;
+
+      } else if (currentOperation === '÷') {
+        // Division: generate answer and divisor, compute dividend
+        const answer = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
+        const divisor = Math.floor(Math.random() * (maxNum - 2)) + 2; // at least 2
+        const dividend = answer * divisor;
+
+        numbers = [dividend, divisor];
+        correctAnswer = answer;
+        document.getElementById('problem-text').textContent = dividend + ' ÷ ' + divisor;
       }
 
       document.getElementById('answer').value = '';
@@ -306,10 +351,19 @@
         }
 
         // Apply delta to correct difficulty
-        if (currentOperation === '+') {
-          additionDifficulty = Math.max(1.0, additionDifficulty + delta);
-        } else {
-          subtractionDifficulty = Math.max(1.0, subtractionDifficulty + delta);
+        switch (currentOperation) {
+          case '+':
+            additionDifficulty = Math.max(1.0, additionDifficulty + delta);
+            break;
+          case '-':
+            subtractionDifficulty = Math.max(1.0, subtractionDifficulty + delta);
+            break;
+          case '×':
+            multiplicationDifficulty = Math.max(1.0, multiplicationDifficulty + delta);
+            break;
+          case '÷':
+            divisionDifficulty = Math.max(1.0, divisionDifficulty + delta);
+            break;
         }
         updateDebug(delta);
 
@@ -330,6 +384,8 @@
       if (!DEBUG) return;
       document.getElementById('debug-addition').textContent = additionDifficulty.toFixed(1);
       document.getElementById('debug-subtraction').textContent = subtractionDifficulty.toFixed(1);
+      document.getElementById('debug-multiplication').textContent = multiplicationDifficulty.toFixed(1);
+      document.getElementById('debug-division').textContent = divisionDifficulty.toFixed(1);
 
       if (delta !== null && delta !== 0) {
         const deltaEl = document.getElementById('debug-delta');
@@ -354,10 +410,19 @@
     }
 
     function adjustDifficulty(amount) {
-      if (currentOperation === '+') {
-        additionDifficulty = Math.max(1.0, additionDifficulty + amount);
-      } else {
-        subtractionDifficulty = Math.max(1.0, subtractionDifficulty + amount);
+      switch (currentOperation) {
+        case '+':
+          additionDifficulty = Math.max(1.0, additionDifficulty + amount);
+          break;
+        case '-':
+          subtractionDifficulty = Math.max(1.0, subtractionDifficulty + amount);
+          break;
+        case '×':
+          multiplicationDifficulty = Math.max(1.0, multiplicationDifficulty + amount);
+          break;
+        case '÷':
+          divisionDifficulty = Math.max(1.0, divisionDifficulty + amount);
+          break;
       }
       updateDebug(amount);
       generateProblem();
@@ -368,10 +433,12 @@
       clearInterval(timer);
       localStorage.setItem('additionLevel', additionDifficulty.toFixed(2));
       localStorage.setItem('subtractionLevel', subtractionDifficulty.toFixed(2));
+      localStorage.setItem('multiplicationLevel', multiplicationDifficulty.toFixed(2));
+      localStorage.setItem('divisionLevel', divisionDifficulty.toFixed(2));
       updateLevelDisplay();
 
       // Show level change (whole numbers only, based on average)
-      const oldLevel = Math.floor((startingAdditionDifficulty + startingSubtractionDifficulty) / 2);
+      const oldLevel = Math.floor((startingAdditionDifficulty + startingSubtractionDifficulty + startingMultiplicationDifficulty + startingDivisionDifficulty) / 4);
       const newLevel = Math.floor(getAverageLevel());
       const levelDelta = newLevel - oldLevel;
       const deltaEl = document.getElementById('level-delta');
