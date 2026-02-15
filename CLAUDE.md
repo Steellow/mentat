@@ -9,7 +9,7 @@
 
 ## Features
 
-- 2-minute timed mental math game
+- 1-minute timed mental math game (divider line shrinks as timer)
 - Random addition and subtraction problems
 - Separate difficulty tracking for each operation
 - Auto-submit on correct answer (no Enter needed)

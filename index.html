@@ -9,6 +9,7 @@
 <body>
   <div class="container">
     <h1>Mental Math</h1>
+    <div class="divider"><div id="timer-progress" class="timer-progress"></div></div>
 
     <div id="start-screen">
       <p>Solve as many problems as you can in 2 minutes.</p>
@@ -22,7 +23,6 @@
     </div>
 
     <div id="game-screen" class="hidden">
-      <div class="timer hidden">Time: <span id="time">30</span>s</div>
       <div class="problem"><span id="problem-text">0 + 0</span> = ?</div>
       <input type="number" id="answer" autofocus oninput="checkAnswer()">
       <div class="score hidden">Score: <span id="score">0</span></div>
@@ -56,6 +56,7 @@
     let problemStartTime = 0;
     let DEBUG = localStorage.getItem('debugMode') === 'true';
     const TARGET_TIME = 4;
+    const GAME_DURATION = 60;
 
     // Initialize debug checkbox
     document.getElementById('debug-checkbox').checked = DEBUG;
@@ -79,7 +80,7 @@
 
     function startGame() {
       score = 0;
-      timeLeft = 120;
+      timeLeft = 60;
       startingAdditionDifficulty = additionDifficulty;
       startingSubtractionDifficulty = subtractionDifficulty;
 
@@ -87,7 +88,8 @@
       document.getElementById('game-screen').classList.remove('hidden');
 
       document.getElementById('score').textContent = score;
-      document.getElementById('time').textContent = timeLeft;
+      document.getElementById('timer-progress').style.transition = 'width 1s linear';
+      updateTimerBar();
 
       // Debug panel visibility
       document.getElementById('debug-panel').classList.toggle('hidden', !DEBUG);
@@ -99,7 +101,7 @@
       if (!DEBUG) {
         timer = setInterval(() => {
           timeLeft--;
-          document.getElementById('time').textContent = timeLeft;
+          updateTimerBar();
 
           if (timeLeft <= 0) {
             endGame();
@@ -243,6 +245,11 @@
       document.getElementById('current-level').textContent = Math.floor(getAverageLevel());
     }
 
+    function updateTimerBar() {
+      const percentage = (timeLeft / GAME_DURATION) * 100;
+      document.getElementById('timer-progress').style.width = percentage + '%';
+    }
+
     function adjustDifficulty(amount) {
       if (currentOperation === '+') {
         additionDifficulty = Math.max(1.0, additionDifficulty + amount);
@@ -280,6 +287,9 @@
         document.getElementById('high-score-value').textContent = highScore;
       }
 
+      const timerEl = document.getElementById('timer-progress');
+      timerEl.style.transition = 'none';
+      timerEl.style.width = '100%';
       document.getElementById('game-screen').classList.add('hidden');
       document.getElementById('start-screen').classList.remove('hidden');
       document.getElementById('last-score-value').textContent = score;
