@@ -115,34 +115,68 @@ button:hover {
   text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
 }
 
-#scores-toggle {
-  cursor: pointer;
-  font-size: 0.7em;
-  opacity: 0.6;
-  transition: opacity 0.2s;
+.stats-link {
+  color: #666;
+  font-size: 0.75em;
+  margin-left: 0.5em;
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
-#scores-toggle:hover {
-  opacity: 1;
+.stats-link:hover {
+  color: #ff3333;
 }
 
-.scores-list {
-  margin-bottom: 1em;
-  padding: 0.5em 0;
-  border-left: 2px solid #333;
-  padding-left: 1em;
+.back-link {
+  color: #666;
+  text-decoration: none;
+  font-size: 0.9em;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #ff3333;
+}
+
+.stats-section {
+  margin-bottom: 2em;
+}
+
+.stats-section h2 {
+  color: #ff3333;
+  font-size: 0.85em;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75em;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.4em 0;
+  font-size: 0.95em;
+}
+
+.stat-label {
+  color: #666;
+}
+
+.stat-value {
+  color: #999;
 }
 
 .score-entry {
-  font-size: 0.85em;
+  font-size: 0.9em;
   color: #666;
-  margin: 0.3em 0;
+  margin: 0.4em 0;
+  display: flex;
+  align-items: center;
 }
 
 .score-rank {
   color: #555;
-  width: 1.5em;
-  display: inline-block;
+  width: 2em;
 }
 
 .score-value {
@@ -151,7 +185,7 @@ button:hover {
 
 .score-date {
   color: #444;
-  margin-left: 0.5em;
+  margin-left: auto;
   font-size: 0.85em;
 }
 

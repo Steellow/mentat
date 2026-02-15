@@ -14,8 +14,7 @@
     <div id="start-screen">
       <p>Solve as many problems as you can in 1 minute.</p>
       <p class="level">Level: <span id="current-level">1</span> <span id="level-delta"></span></p>
-      <p id="high-score" class="high-score">High score: <span id="high-score-value">0</span> <span id="scores-toggle" onclick="toggleScores()">▼</span></p>
-      <div id="scores-list" class="scores-list hidden"></div>
+      <p class="high-score">High score: <span id="high-score-value">0</span> <a href="stats.html" class="stats-link">stats</a></p>
       <p id="last-score" class="last-score hidden">Last score: <span id="last-score-value">0</span></p>
       <button onclick="startGame()">Start</button>
       <div id="debug-toggle" class="debug">
@@ -51,6 +50,7 @@
     let additionDifficulty = parseFloat(localStorage.getItem('additionLevel')) || 1.0;
     let subtractionDifficulty = parseFloat(localStorage.getItem('subtractionLevel')) || 1.0;
     let topScores = JSON.parse(localStorage.getItem('topScores')) || [];
+    let totalPuzzlesSolved = parseInt(localStorage.getItem('totalPuzzlesSolved')) || 0;
     let startingAdditionDifficulty = additionDifficulty;
     let startingSubtractionDifficulty = subtractionDifficulty;
     let currentPuzzleDifficulty = 1.0;
@@ -85,27 +85,6 @@
 
     function updateHighScoreDisplay() {
       document.getElementById('high-score-value').textContent = getHighScore();
-      renderScoresList();
-    }
-
-    function renderScoresList() {
-      const list = document.getElementById('scores-list');
-      if (topScores.length === 0) {
-        list.innerHTML = '<div class="score-entry">No scores yet</div>';
-        return;
-      }
-      list.innerHTML = topScores.map((s, i) => {
-        const date = new Date(s.date);
-        const dateStr = date.toLocaleDateString();
-        return '<div class="score-entry"><span class="score-rank">' + (i + 1) + '.</span> <span class="score-value">' + s.score + '</span> <span class="score-date">' + dateStr + '</span></div>';
-      }).join('');
-    }
-
-    function toggleScores() {
-      const list = document.getElementById('scores-list');
-      const toggle = document.getElementById('scores-toggle');
-      list.classList.toggle('hidden');
-      toggle.textContent = list.classList.contains('hidden') ? '▼' : '▲';
     }
 
     function addScore(newScore) {
@@ -268,6 +247,9 @@
         score += Math.floor(difficulty);
         document.getElementById('score').textContent = score;
 
+        // Track total puzzles solved
+        totalPuzzlesSolved++;
+
         generateProblem();
       }
     }
@@ -331,7 +313,8 @@
         deltaEl.textContent = '';
       }
 
-      // Add score to top scores
+      // Save stats
+      localStorage.setItem('totalPuzzlesSolved', totalPuzzlesSolved);
       addScore(score);
 
       const timerEl = document.getElementById('timer-progress');

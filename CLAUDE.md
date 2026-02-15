@@ -14,7 +14,7 @@
 - Separate difficulty tracking for each operation
 - Auto-submit on correct answer (no Enter needed)
 - Play again option after game ends
-- Top 10 scores with dates tracked and displayed (expandable list on main page)
+- Stats page with top 10 scores, total puzzles solved, and level details
 
 ## Difficulty System
 
@@ -44,9 +44,10 @@
 
 ## Architecture
 
-- `index.html` - HTML structure and inline JavaScript
-- `style.css` - Obsidian-inspired dark theme styles
-- Two screens: main (start), game (toggled via CSS classes)
+- `index.html` - Main game with inline JavaScript
+- `stats.html` - Stats page (top 10 scores, levels, total puzzles)
+- `style.css` - Hacker/arcade dark theme styles
+- Two screens in index: main (start), game (toggled via CSS classes)
 
 ## Debug Mode
 

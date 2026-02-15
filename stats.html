@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stats - Mental Math</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Stats</h1>
+    <div class="divider"><div class="timer-progress"></div></div>
+
+    <p><a href="index.html" class="back-link">← back</a></p>
+
+    <section class="stats-section">
+      <h2>Level</h2>
+      <div class="stat-row">
+        <span class="stat-label">Total</span>
+        <span class="stat-value" id="total-level">1</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Addition</span>
+        <span class="stat-value" id="addition-level">1</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Subtraction</span>
+        <span class="stat-value" id="subtraction-level">1</span>
+      </div>
+    </section>
+
+    <section class="stats-section">
+      <h2>Puzzles</h2>
+      <div class="stat-row">
+        <span class="stat-label">Total solved</span>
+        <span class="stat-value" id="total-puzzles">0</span>
+      </div>
+    </section>
+
+    <section class="stats-section">
+      <h2>Top 10 Scores</h2>
+      <div id="scores-list"></div>
+    </section>
+  </div>
+
+  <script>
+    const additionLevel = parseFloat(localStorage.getItem('additionLevel')) || 1.0;
+    const subtractionLevel = parseFloat(localStorage.getItem('subtractionLevel')) || 1.0;
+    const totalPuzzles = parseInt(localStorage.getItem('totalPuzzlesSolved')) || 0;
+
+    let topScores = [];
+    try {
+      topScores = JSON.parse(localStorage.getItem('topScores')) || [];
+    } catch (e) {
+      topScores = [];
+    }
+
+    const totalLevel = Math.floor((additionLevel + subtractionLevel) / 2);
+    document.getElementById('total-level').textContent = totalLevel;
+    document.getElementById('addition-level').textContent = Math.floor(additionLevel);
+    document.getElementById('subtraction-level').textContent = Math.floor(subtractionLevel);
+    document.getElementById('total-puzzles').textContent = totalPuzzles;
+
+    const scoresList = document.getElementById('scores-list');
+    if (topScores.length === 0) {
+      scoresList.innerHTML = '<div class="score-entry">No scores yet</div>';
+    } else {
+      scoresList.innerHTML = topScores.map((s, i) => {
+        const date = new Date(s.date);
+        const dateStr = date.toLocaleDateString();
+        return '<div class="score-entry"><span class="score-rank">' + (i + 1) + '.</span> <span class="score-value">' + s.score + '</span> <span class="score-date">' + dateStr + '</span></div>';
+      }).join('');
+    }
+  </script>
+</body>
+</html>
