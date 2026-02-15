@@ -1,4 +1,4 @@
-# Daily Mental Math
+# mentat
 
 - This repo is entirely maintained by AI. Always keep this file up to date about features, architect, plans and such.
 

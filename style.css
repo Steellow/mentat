@@ -341,3 +341,19 @@ button:hover {
   border-color: #ff3333;
   color: #ff3333;
 }
+
+/* Easter egg */
+.mantra {
+  position: fixed;
+  bottom: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65em;
+  color: #1a1a1a;
+  letter-spacing: 0.15em;
+  transition: color 0.5s;
+}
+
+.mantra:hover {
+  color: #333;
+}
