@@ -459,7 +459,9 @@
 
       // Save stats
       localStorage.setItem('totalPuzzlesSolved', totalPuzzlesSolved);
-      addScore(score);
+      if (!DEBUG) {
+        addScore(score);
+      }
 
       const timerEl = document.getElementById('timer-progress');
       timerEl.style.transition = 'none';
