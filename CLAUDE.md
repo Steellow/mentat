@@ -38,6 +38,8 @@
 
 ### Multiplication/Division
 - Smaller numbers to match addition difficulty: min = 2 + floor(diff/3), max = 4 + floor(diff/2)
+- Both numbers use minNum (no trivial ×1 or ÷1 problems)
+- Division answer range is wider (minNum to maxNum*2) for more challenge
 - Division generates answer and divisor, computes dividend (clean integer division)
 
 ### Operation Selection

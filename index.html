@@ -214,8 +214,13 @@
       // Generate first number (scales with difficulty)
       let num1 = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
 
-      // Second number has wider range (1 to max)
-      let num2 = Math.floor(Math.random() * maxNum) + 1;
+      // Second number: multiplication/division use minNum, addition/subtraction start at 1
+      let num2;
+      if (currentOperation === '×' || currentOperation === '÷') {
+        num2 = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
+      } else {
+        num2 = Math.floor(Math.random() * maxNum) + 1;
+      }
 
       numbers = [num1, num2];
 
@@ -306,8 +311,10 @@
 
       } else if (currentOperation === '÷') {
         // Division: generate answer and divisor, compute dividend
-        const answer = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
-        const divisor = Math.floor(Math.random() * (maxNum - 2)) + 2; // at least 2
+        // Answer range is wider (up to maxNum * 2) to make division harder
+        const answerMax = maxNum * 2;
+        const answer = Math.floor(Math.random() * (answerMax - minNum + 1)) + minNum;
+        const divisor = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
         const dividend = answer * divisor;
 
         numbers = [dividend, divisor];
