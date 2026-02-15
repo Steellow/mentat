@@ -12,9 +12,10 @@
     <div class="divider"><div id="timer-progress" class="timer-progress"></div></div>
 
     <div id="start-screen">
-      <p>Solve as many problems as you can in 2 minutes.</p>
+      <p>Solve as many problems as you can in 1 minute.</p>
       <p class="level">Level: <span id="current-level">1</span> <span id="level-delta"></span></p>
-      <p id="high-score" class="high-score">High score: <span id="high-score-value">0</span></p>
+      <p id="high-score" class="high-score">High score: <span id="high-score-value">0</span> <span id="scores-toggle" onclick="toggleScores()">▼</span></p>
+      <div id="scores-list" class="scores-list hidden"></div>
       <p id="last-score" class="last-score hidden">Last score: <span id="last-score-value">0</span></p>
       <button onclick="startGame()">Start</button>
       <div id="debug-toggle" class="debug">
@@ -49,7 +50,7 @@
     let currentOperation = '+';
     let additionDifficulty = parseFloat(localStorage.getItem('additionLevel')) || 1.0;
     let subtractionDifficulty = parseFloat(localStorage.getItem('subtractionLevel')) || 1.0;
-    let highScore = parseInt(localStorage.getItem('highScore')) || 0;
+    let topScores = JSON.parse(localStorage.getItem('topScores')) || [];
     let startingAdditionDifficulty = additionDifficulty;
     let startingSubtractionDifficulty = subtractionDifficulty;
     let currentPuzzleDifficulty = 1.0;
@@ -76,7 +77,44 @@
 
     // Initialize level display
     updateLevelDisplay();
-    document.getElementById('high-score-value').textContent = highScore;
+    updateHighScoreDisplay();
+
+    function getHighScore() {
+      return topScores.length > 0 ? topScores[0].score : 0;
+    }
+
+    function updateHighScoreDisplay() {
+      document.getElementById('high-score-value').textContent = getHighScore();
+      renderScoresList();
+    }
+
+    function renderScoresList() {
+      const list = document.getElementById('scores-list');
+      if (topScores.length === 0) {
+        list.innerHTML = '<div class="score-entry">No scores yet</div>';
+        return;
+      }
+      list.innerHTML = topScores.map((s, i) => {
+        const date = new Date(s.date);
+        const dateStr = date.toLocaleDateString();
+        return '<div class="score-entry"><span class="score-rank">' + (i + 1) + '.</span> <span class="score-value">' + s.score + '</span> <span class="score-date">' + dateStr + '</span></div>';
+      }).join('');
+    }
+
+    function toggleScores() {
+      const list = document.getElementById('scores-list');
+      const toggle = document.getElementById('scores-toggle');
+      list.classList.toggle('hidden');
+      toggle.textContent = list.classList.contains('hidden') ? '▼' : '▲';
+    }
+
+    function addScore(newScore) {
+      topScores.push({ score: newScore, date: Date.now() });
+      topScores.sort((a, b) => b.score - a.score);
+      topScores = topScores.slice(0, 10);
+      localStorage.setItem('topScores', JSON.stringify(topScores));
+      updateHighScoreDisplay();
+    }
 
     function startGame() {
       score = 0;
@@ -293,12 +331,8 @@
         deltaEl.textContent = '';
       }
 
-      // Update high score if beaten
-      if (score > highScore) {
-        highScore = score;
-        localStorage.setItem('highScore', highScore);
-        document.getElementById('high-score-value').textContent = highScore;
-      }
+      // Add score to top scores
+      addScore(score);
 
       const timerEl = document.getElementById('timer-progress');
       timerEl.style.transition = 'none';

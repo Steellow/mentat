@@ -14,7 +14,7 @@
 - Separate difficulty tracking for each operation
 - Auto-submit on correct answer (no Enter needed)
 - Play again option after game ends
-- All-time high score displayed on main page (persisted to localStorage)
+- Top 10 scores with dates tracked and displayed (expandable list on main page)
 
 ## Difficulty System
 

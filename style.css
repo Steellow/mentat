@@ -115,6 +115,50 @@ button:hover {
   text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
 }
 
+#scores-toggle {
+  cursor: pointer;
+  font-size: 0.7em;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+#scores-toggle:hover {
+  opacity: 1;
+}
+
+.scores-list {
+  margin-bottom: 1em;
+  padding: 0.5em 0;
+  border-left: 2px solid #333;
+  padding-left: 1em;
+}
+
+.score-entry {
+  font-size: 0.85em;
+  color: #666;
+  margin: 0.3em 0;
+}
+
+.score-rank {
+  color: #555;
+  width: 1.5em;
+  display: inline-block;
+}
+
+.score-value {
+  color: #999;
+}
+
+.score-date {
+  color: #444;
+  margin-left: 0.5em;
+  font-size: 0.85em;
+}
+
+.score-entry:first-child .score-value {
+  color: #ffd700;
+}
+
 .last-score {
   color: #666;
   margin-bottom: 1em;
