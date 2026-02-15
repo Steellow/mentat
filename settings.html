@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Mental Math</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Settings</h1>
+    <div class="divider"><div class="timer-progress"></div></div>
+
+    <p><a href="index.html" class="back-link">← back</a></p>
+
+    <section class="stats-section">
+      <h2>Key Bindings</h2>
+      <p class="settings-desc">Map keyboard keys to numbers (useful without numpad)</p>
+
+      <div class="keybind-grid">
+        <div class="keybind-row">
+          <label class="keybind-item">
+            <span class="keybind-num">1</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="1">
+          </label>
+          <label class="keybind-item">
+            <span class="keybind-num">2</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="2">
+          </label>
+          <label class="keybind-item">
+            <span class="keybind-num">3</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="3">
+          </label>
+        </div>
+        <div class="keybind-row">
+          <label class="keybind-item">
+            <span class="keybind-num">4</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="4">
+          </label>
+          <label class="keybind-item">
+            <span class="keybind-num">5</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="5">
+          </label>
+          <label class="keybind-item">
+            <span class="keybind-num">6</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="6">
+          </label>
+        </div>
+        <div class="keybind-row">
+          <label class="keybind-item">
+            <span class="keybind-num">7</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="7">
+          </label>
+          <label class="keybind-item">
+            <span class="keybind-num">8</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="8">
+          </label>
+          <label class="keybind-item">
+            <span class="keybind-num">9</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="9">
+          </label>
+        </div>
+        <div class="keybind-row">
+          <label class="keybind-item">
+            <span class="keybind-num">0</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="0">
+          </label>
+        </div>
+      </div>
+
+      <button onclick="clearBindings()" class="clear-btn">Clear All</button>
+    </section>
+  </div>
+
+  <script>
+    let keyBindings = JSON.parse(localStorage.getItem('keyBindings')) || {};
+
+    // Load saved bindings into inputs
+    document.querySelectorAll('.keybind-input').forEach(input => {
+      const num = input.dataset.num;
+      // Find the key that maps to this number
+      for (const [key, value] of Object.entries(keyBindings)) {
+        if (value === num) {
+          input.value = key;
+          break;
+        }
+      }
+
+      // Save on input
+      input.addEventListener('input', () => {
+        const key = input.value.toLowerCase();
+        input.value = key;
+
+        // Remove old binding for this number
+        for (const [k, v] of Object.entries(keyBindings)) {
+          if (v === num) {
+            delete keyBindings[k];
+          }
+        }
+
+        // Remove if this key was bound to another number
+        if (key && keyBindings[key]) {
+          const oldNum = keyBindings[key];
+          document.querySelector(`.keybind-input[data-num="${oldNum}"]`).value = '';
+        }
+
+        // Set new binding
+        if (key) {
+          keyBindings[key] = num;
+        }
+
+        localStorage.setItem('keyBindings', JSON.stringify(keyBindings));
+      });
+    });
+
+    function clearBindings() {
+      keyBindings = {};
+      localStorage.setItem('keyBindings', JSON.stringify(keyBindings));
+      document.querySelectorAll('.keybind-input').forEach(input => {
+        input.value = '';
+      });
+    }
+  </script>
+</body>
+</html>

@@ -46,8 +46,14 @@
 
 - `index.html` - Main game with inline JavaScript
 - `stats.html` - Stats page (top 10 scores, levels, total puzzles)
+- `settings.html` - Settings page (custom key bindings)
 - `style.css` - Hacker/arcade dark theme styles
 - Two screens in index: main (start), game (toggled via CSS classes)
+
+## Settings
+
+- Custom key bindings for number input (useful without numpad)
+- Key bindings stored in localStorage as `keyBindings` object
 
 ## Debug Mode
 

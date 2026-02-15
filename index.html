@@ -14,7 +14,7 @@
     <div id="start-screen">
       <p>Solve as many problems as you can in 1 minute.</p>
       <p class="level">Level: <span id="current-level">1</span> <span id="level-delta"></span></p>
-      <p class="high-score">High score: <span id="high-score-value">0</span> <a href="stats.html" class="stats-link">stats</a></p>
+      <p class="high-score">High score: <span id="high-score-value">0</span> <a href="stats.html" class="stats-link">stats</a> <a href="settings.html" class="stats-link">settings</a></p>
       <p id="last-score" class="last-score hidden">Last score: <span id="last-score-value">0</span></p>
       <button onclick="startGame()">Start</button>
       <div id="debug-toggle" class="debug">
@@ -24,7 +24,7 @@
 
     <div id="game-screen" class="hidden">
       <div class="problem"><span id="problem-text">0 + 0</span> = ?</div>
-      <input type="number" id="answer" autofocus oninput="checkAnswer()">
+      <input type="text" id="answer" inputmode="numeric" autofocus oninput="checkAnswer()" onkeydown="handleKeyBinding(event)">
       <div class="score hidden">Score: <span id="score">0</span></div>
       <div id="debug-panel" class="debug">
         <span class="debug-label">DEBUG</span>
@@ -51,6 +51,7 @@
     let subtractionDifficulty = parseFloat(localStorage.getItem('subtractionLevel')) || 1.0;
     let topScores = JSON.parse(localStorage.getItem('topScores')) || [];
     let totalPuzzlesSolved = parseInt(localStorage.getItem('totalPuzzlesSolved')) || 0;
+    let keyBindings = JSON.parse(localStorage.getItem('keyBindings')) || {};
     let startingAdditionDifficulty = additionDifficulty;
     let startingSubtractionDifficulty = subtractionDifficulty;
     let currentPuzzleDifficulty = 1.0;
@@ -65,6 +66,16 @@
     function toggleDebug() {
       DEBUG = document.getElementById('debug-checkbox').checked;
       localStorage.setItem('debugMode', DEBUG);
+    }
+
+    function handleKeyBinding(event) {
+      const key = event.key.toLowerCase();
+      if (keyBindings[key]) {
+        event.preventDefault();
+        const input = document.getElementById('answer');
+        input.value += keyBindings[key];
+        checkAnswer();
+      }
     }
 
     function getAverageLevel() {

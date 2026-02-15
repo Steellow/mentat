@@ -278,3 +278,66 @@ button:hover {
 #debug-delta.visible {
   opacity: 1;
 }
+
+/* Settings page */
+.settings-desc {
+  color: #555;
+  font-size: 0.85em;
+  margin-bottom: 1em;
+}
+
+.keybind-grid {
+  margin: 1em 0;
+}
+
+.keybind-row {
+  display: flex;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.keybind-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.keybind-num {
+  color: #666;
+  width: 1em;
+  text-align: center;
+}
+
+.keybind-input {
+  background-color: #111;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 6px;
+  font-family: inherit;
+  font-size: 1em;
+  width: 2.5em;
+  text-align: center;
+  border-radius: 0;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.keybind-input:focus {
+  border-color: #ff3333;
+}
+
+.clear-btn {
+  background-color: transparent;
+  color: #666;
+  border: 1px solid #333;
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 0.8em;
+  cursor: pointer;
+  margin-top: 0.5em;
+}
+
+.clear-btn:hover {
+  border-color: #ff3333;
+  color: #ff3333;
+}
