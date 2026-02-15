@@ -206,6 +206,58 @@ button:hover {
   margin-bottom: 0.5em;
 }
 
+.stats-icon {
+  color: #555;
+  cursor: pointer;
+  margin-left: 0.5em;
+  transition: color 0.2s;
+}
+
+.stats-icon:hover {
+  color: #ff3333;
+}
+
+.stats-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #0a0a0a;
+  border: 1px solid #333;
+  padding: 2em;
+  z-index: 100;
+  min-width: 500px;
+  max-width: 95vw;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.popup-header {
+  color: #ff3333;
+  font-size: 1.2em;
+  margin-bottom: 1em;
+  display: flex;
+  justify-content: space-between;
+}
+
+.popup-close {
+  cursor: pointer;
+  color: #666;
+  transition: color 0.2s;
+}
+
+.popup-close:hover {
+  color: #ff3333;
+}
+
+#stats-chart {
+  font-size: 1.1em;
+  color: #999;
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre;
+}
+
 .delta-up {
   color: #00ff88;
   margin-left: 0.5em;

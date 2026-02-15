@@ -18,7 +18,11 @@
     <div id="start-screen">
       <p>Solve as many problems as you can in 1 minute.</p>
       <p class="level">Level: <span id="current-level">1</span> <span id="level-delta"></span></p>
-      <p id="last-score" class="last-score hidden">Last score: <span id="last-score-value">0</span></p>
+      <p id="last-score" class="last-score hidden">Last score: <span id="last-score-value">0</span> <span id="stats-icon" class="stats-icon" onclick="toggleStatsPopup()">▦</span></p>
+      <div id="stats-popup" class="stats-popup hidden">
+        <div class="popup-header">Response Times <span class="popup-close" onclick="toggleStatsPopup()">×</span></div>
+        <pre id="stats-chart"></pre>
+      </div>
       <p class="high-score">High score: <span id="high-score-value">0</span></p>
       <button onclick="startGame()">Start</button>
       <p class="mantra">it is by will alone i set my mind in motion</p>
@@ -64,6 +68,7 @@
     let isEasyProblem = false;
     let problemStartTime = 0;
     let DEBUG = localStorage.getItem('debugMode') === 'true';
+    let gameResponseTimes = [];
     const TARGET_TIME = 4;
     const GAME_DURATION = 60;
 
@@ -108,6 +113,7 @@
     function startGame() {
       score = 0;
       timeLeft = 60;
+      gameResponseTimes = [];
       startingAdditionDifficulty = additionDifficulty;
       startingSubtractionDifficulty = subtractionDifficulty;
 
@@ -249,6 +255,9 @@
       if (answer === correctAnswer) {
         const elapsed = (Date.now() - problemStartTime) / 1000;
         const difficulty = getCurrentDifficulty();
+        const points = Math.floor(difficulty);
+        const puzzleText = document.getElementById('problem-text').textContent;
+        gameResponseTimes.push({ time: elapsed, puzzle: puzzleText, points: points });
 
         // Smooth difficulty adjustment
         const timeDelta = elapsed - TARGET_TIME; // negative = fast, positive = slow
@@ -349,6 +358,38 @@
       document.getElementById('start-screen').classList.remove('hidden');
       document.getElementById('last-score-value').textContent = score;
       document.getElementById('last-score').classList.remove('hidden');
+      renderStatsChart();
+    }
+
+    function toggleStatsPopup() {
+      document.getElementById('stats-popup').classList.toggle('hidden');
+    }
+
+    function renderStatsChart() {
+      const chart = document.getElementById('stats-chart');
+      if (gameResponseTimes.length === 0) {
+        chart.textContent = 'No data';
+        return;
+      }
+
+      const times = gameResponseTimes.map(p => p.time);
+      const maxTime = Math.max(...times, TARGET_TIME);
+      const barWidth = 20;
+      const lines = gameResponseTimes.map((p, i) => {
+        const width = Math.round((p.time / maxTime) * barWidth);
+        const bar = '█'.repeat(width) + '░'.repeat(barWidth - width);
+        const puzzle = p.puzzle.padEnd(15);
+        return `${puzzle} ${bar} ${p.time.toFixed(1)}s  +${p.points}`;
+      });
+
+      // Add summary
+      const totalPoints = gameResponseTimes.reduce((sum, p) => sum + p.points, 0);
+      const avg = times.reduce((a, b) => a + b, 0) / times.length;
+      const fast = times.filter(t => t <= TARGET_TIME).length;
+      lines.push('');
+      lines.push(`avg: ${avg.toFixed(1)}s | fast: ${fast}/${gameResponseTimes.length} | total: ${totalPoints} points`);
+
+      chart.textContent = lines.join('\n');
     }
   </script>
 </body>
