@@ -60,7 +60,7 @@
 ## UI Style
 
 - Dark background (#0a0a0a)
-- Cyan accent (#00ffc8) with subtle glow effects
+- Red accent (#ff3333) with subtle glow effects
 - Monospace font throughout (SF Mono, Monaco, etc.)
 - Hacker/arcade aesthetic with sharp corners
 - Gold high score (#ffd700), orange debug elements

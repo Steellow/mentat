@@ -22,13 +22,13 @@ body {
 }
 
 h1 {
-  color: #00ffc8;
+  color: #ff3333;
   font-weight: 400;
   margin-bottom: 0;
   padding-bottom: 0.5em;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  text-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
+  text-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
 }
 
 .divider {
@@ -40,8 +40,8 @@ h1 {
 .timer-progress {
   height: 100%;
   width: 100%;
-  background-color: #00ffc8;
-  box-shadow: 0 0 8px rgba(0, 255, 200, 0.6);
+  background-color: #ff3333;
+  box-shadow: 0 0 8px rgba(255, 51, 51, 0.6);
   transition: width 1s linear;
 }
 
@@ -66,14 +66,14 @@ input {
 }
 
 input:focus {
-  border-color: #00ffc8;
-  box-shadow: 0 0 8px rgba(0, 255, 200, 0.4);
+  border-color: #ff3333;
+  box-shadow: 0 0 8px rgba(255, 51, 51, 0.4);
 }
 
 button {
   background-color: transparent;
-  color: #00ffc8;
-  border: 1px solid #00ffc8;
+  color: #ff3333;
+  border: 1px solid #ff3333;
   padding: 10px 24px;
   font-family: inherit;
   font-size: 0.9em;
@@ -86,9 +86,9 @@ button {
 }
 
 button:hover {
-  background-color: #00ffc8;
+  background-color: #ff3333;
   color: #0a0a0a;
-  box-shadow: 0 0 12px rgba(0, 255, 200, 0.5);
+  box-shadow: 0 0 12px rgba(255, 51, 51, 0.5);
 }
 
 .score {
@@ -97,12 +97,12 @@ button:hover {
 }
 
 .level {
-  color: #00ffc8;
+  color: #ff3333;
   margin: 1em 0;
 }
 
 .level span#current-level {
-  text-shadow: 0 0 6px rgba(0, 255, 200, 0.5);
+  text-shadow: 0 0 6px rgba(255, 51, 51, 0.5);
 }
 
 .high-score {
