@@ -156,7 +156,18 @@
         correctAnswer = numbers.reduce((sum, n) => sum + n, 0);
         document.getElementById('problem-text').textContent = numbers.join(' + ');
       } else {
-        // Subtraction: ensure positive result (larger - smaller)
+        // Subtraction: generate answer first, then construct problem
+        // Answer scales similarly to addition results
+        const targetAnswer = Math.floor(Math.random() * (maxNum * 2 - minNum + 1)) + minNum;
+
+        // Generate the number we subtract
+        num2 = Math.floor(Math.random() * maxNum) + 1;
+
+        // Calculate num1 to produce the target answer
+        num1 = targetAnswer + num2;
+
+        numbers = [num1, num2];
+
         // 10% chance: challenge multiplier (double one number)
         if (Math.random() < 0.1) {
           const idx = Math.floor(Math.random() * numbers.length);
@@ -172,8 +183,10 @@
           }
         }
 
-        // Sort descending to ensure positive result
-        numbers.sort((a, b) => b - a);
+        // Ensure positive non-zero result after modifiers
+        if (numbers[0] <= numbers[1]) {
+          numbers[0] = numbers[1] + 1;
+        }
         correctAnswer = numbers[0] - numbers[1];
         document.getElementById('problem-text').textContent = numbers[0] + ' - ' + numbers[1];
       }

@@ -35,7 +35,7 @@
 - First number scales with difficulty: min = 1 + floor(diff), max = 5 + floor(diff * 2)
 - Second number has wider range: 1 to max (more variability)
 - Operation randomly selected (50/50 addition/subtraction)
-- Subtraction always larger - smaller (positive result)
+- Subtraction generates answer first (minNum to maxNum*2), then constructs num1 = answer + num2
 - 10% chance modifiers (each rolled independently):
   - Easy problem: use base difficulty (1.0) instead of current
   - Three-number addition (addition only): adds a third number
