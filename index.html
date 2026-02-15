@@ -409,7 +409,7 @@
       }
 
       const times = gameResponseTimes.map(p => p.time);
-      const maxTime = Math.max(...times, TARGET_TIME);
+      const maxTime = Math.max(...times);
       const barWidth = 20;
       const lines = gameResponseTimes.map((p, i) => {
         const width = Math.round((p.time / maxTime) * barWidth);
