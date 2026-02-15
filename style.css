@@ -5,9 +5,9 @@
 }
 
 body {
-  background-color: #1e1e1e;
-  color: #dcddde;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #0a0a0a;
+  color: #b0b0b0;
+  font-family: "SF Mono", "Monaco", "Inconsolata", "Fira Code", monospace;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -22,89 +22,107 @@ body {
 }
 
 h1 {
-  color: #dcddde;
-  font-weight: 600;
+  color: #00ffc8;
+  font-weight: 400;
   margin-bottom: 0;
   padding-bottom: 0.5em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
 }
 
 .divider {
-  height: 1px;
-  background-color: #2a2a2a;
+  height: 2px;
+  background-color: #1a1a1a;
   margin-bottom: 1em;
 }
 
 .timer-progress {
   height: 100%;
   width: 100%;
-  background-color: #4a4a4a;
+  background-color: #00ffc8;
+  box-shadow: 0 0 8px rgba(0, 255, 200, 0.6);
   transition: width 1s linear;
 }
 
-
 .problem {
-  font-size: 2em;
+  font-size: 2.2em;
   margin: 1em 0;
-  font-family: monospace;
+  color: #e0e0e0;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
 input {
-  background-color: #2b2b2b;
-  border: 1px solid #3e3e3e;
-  color: #dcddde;
+  background-color: #111;
+  border: 1px solid #333;
+  color: #fff;
   padding: 8px 12px;
+  font-family: inherit;
   font-size: 1.2em;
   width: 100px;
-  border-radius: 4px;
+  border-radius: 0;
   outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 input:focus {
-  border-color: #a88bfa;
+  border-color: #00ffc8;
+  box-shadow: 0 0 8px rgba(0, 255, 200, 0.4);
 }
 
 button {
-  background-color: #483699;
-  color: #dcddde;
-  border: none;
-  padding: 10px 20px;
-  font-size: 1em;
+  background-color: transparent;
+  color: #00ffc8;
+  border: 1px solid #00ffc8;
+  padding: 10px 24px;
+  font-family: inherit;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 0;
   margin-top: 1em;
+  transition: all 0.2s;
 }
 
 button:hover {
-  background-color: #5b44b8;
+  background-color: #00ffc8;
+  color: #0a0a0a;
+  box-shadow: 0 0 12px rgba(0, 255, 200, 0.5);
 }
 
 .score {
   margin-top: 1em;
-  color: #8b8b8b;
+  color: #666;
 }
 
 .level {
-  color: #a88bfa;
+  color: #00ffc8;
   margin: 1em 0;
 }
 
+.level span#current-level {
+  text-shadow: 0 0 6px rgba(0, 255, 200, 0.5);
+}
+
 .high-score {
-  color: #e5c07b;
+  color: #ffd700;
   margin-bottom: 0.5em;
+  text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
 }
 
 .last-score {
-  color: #98c379;
+  color: #666;
   margin-bottom: 1em;
 }
 
 .delta-up {
-  color: #98c379;
+  color: #00ff88;
   margin-left: 0.5em;
 }
 
 .delta-down {
-  color: #e06c75;
+  color: #ff4466;
   margin-left: 0.5em;
 }
 
@@ -116,10 +134,9 @@ button:hover {
 .debug {
   margin-top: 2em;
   padding: 0.75em;
-  border: 1px dashed #e5c07b;
-  background-color: rgba(229, 192, 123, 0.1);
-  color: #e5c07b;
-  font-family: monospace;
+  border: 1px dashed #ff9900;
+  background-color: rgba(255, 153, 0, 0.05);
+  color: #ff9900;
   font-size: 0.85em;
 }
 
@@ -132,15 +149,16 @@ button:hover {
 
 #debug-toggle label {
   cursor: pointer;
-  border: 1px dashed #e5c07b;
-  background-color: rgba(229, 192, 123, 0.1);
+  border: 1px dashed #ff9900;
+  background-color: rgba(255, 153, 0, 0.05);
   padding: 0.5em 0.75em;
   display: inline-block;
+  font-size: 0.85em;
 }
 
 .debug-label {
-  background-color: #e5c07b;
-  color: #1e1e1e;
+  background-color: #ff9900;
+  color: #0a0a0a;
   padding: 2px 6px;
   font-size: 0.7em;
   font-weight: bold;
@@ -155,20 +173,21 @@ button:hover {
 
 .debug-btn {
   background-color: transparent;
-  border: 1px solid #e5c07b;
-  color: #e5c07b;
+  border: 1px solid #ff9900;
+  color: #ff9900;
   padding: 4px 10px;
   font-size: 0.85em;
   margin-top: 0;
+  border-radius: 0;
 }
 
 .debug-btn:hover {
-  background-color: #e5c07b;
-  color: #1e1e1e;
+  background-color: #ff9900;
+  color: #0a0a0a;
 }
 
 #debug-delta {
-  color: #98c379;
+  color: #00ff88;
   opacity: 0;
   transition: opacity 0.2s ease;
   margin-left: 0.5em;
