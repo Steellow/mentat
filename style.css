@@ -81,6 +81,11 @@ button:hover {
   margin: 1em 0;
 }
 
+.high-score {
+  color: #e5c07b;
+  margin-bottom: 0.5em;
+}
+
 .last-score {
   color: #98c379;
   margin-bottom: 1em;

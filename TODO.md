@@ -1,0 +1,5 @@
+- show countdown timer during playtime, like a slider or something? Not number
+- On main page the last score should be highlighted more
+- Add settings
+- subtraction, multiplying
+- occasional 2-5 times harder puzzle. Also that much more time to think for it to count

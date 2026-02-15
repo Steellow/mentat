@@ -13,6 +13,7 @@
     <div id="start-screen">
       <p>Solve as many problems as you can in 2 minutes.</p>
       <p class="level">Level: <span id="current-level">1</span> <span id="level-delta"></span></p>
+      <p id="high-score" class="high-score">High score: <span id="high-score-value">0</span></p>
       <p id="last-score" class="last-score hidden">Last score: <span id="last-score-value">0</span></p>
       <button onclick="startGame()">Start</button>
       <div id="debug-toggle" class="debug">
@@ -48,6 +49,7 @@
     let currentOperation = '+';
     let additionDifficulty = parseFloat(localStorage.getItem('additionLevel')) || 1.0;
     let subtractionDifficulty = parseFloat(localStorage.getItem('subtractionLevel')) || 1.0;
+    let highScore = parseInt(localStorage.getItem('highScore')) || 0;
     let startingAdditionDifficulty = additionDifficulty;
     let startingSubtractionDifficulty = subtractionDifficulty;
     let currentPuzzleDifficulty = 1.0;
@@ -73,6 +75,7 @@
 
     // Initialize level display
     updateLevelDisplay();
+    document.getElementById('high-score-value').textContent = highScore;
 
     function startGame() {
       score = 0;
@@ -268,6 +271,13 @@
         deltaEl.className = levelDelta > 0 ? 'delta-up' : 'delta-down';
       } else {
         deltaEl.textContent = '';
+      }
+
+      // Update high score if beaten
+      if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('highScore', highScore);
+        document.getElementById('high-score-value').textContent = highScore;
       }
 
       document.getElementById('game-screen').classList.add('hidden');
