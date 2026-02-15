@@ -8,18 +8,19 @@
 </head>
 <body>
   <div class="container">
+    <nav class="nav-icons">
+      <a href="stats.html" title="Stats">▦</a>
+      <a href="settings.html" title="Settings">⚙</a>
+    </nav>
     <h1>mentat</h1>
     <div class="divider"><div id="timer-progress" class="timer-progress"></div></div>
 
     <div id="start-screen">
       <p>Solve as many problems as you can in 1 minute.</p>
       <p class="level">Level: <span id="current-level">1</span> <span id="level-delta"></span></p>
-      <p class="high-score">High score: <span id="high-score-value">0</span> <a href="stats.html" class="stats-link">stats</a> <a href="settings.html" class="stats-link">settings</a></p>
       <p id="last-score" class="last-score hidden">Last score: <span id="last-score-value">0</span></p>
+      <p class="high-score">High score: <span id="high-score-value">0</span></p>
       <button onclick="startGame()">Start</button>
-      <div id="debug-toggle" class="debug">
-        <label><input type="checkbox" id="debug-checkbox" onchange="toggleDebug()"> Debug mode</label>
-      </div>
       <p class="mantra">it is by will alone i set my mind in motion</p>
     </div>
 
@@ -60,14 +61,6 @@
     let DEBUG = localStorage.getItem('debugMode') === 'true';
     const TARGET_TIME = 4;
     const GAME_DURATION = 60;
-
-    // Initialize debug checkbox
-    document.getElementById('debug-checkbox').checked = DEBUG;
-
-    function toggleDebug() {
-      DEBUG = document.getElementById('debug-checkbox').checked;
-      localStorage.setItem('debugMode', DEBUG);
-    }
 
     function handleKeyBinding(event) {
       const key = event.key.toLowerCase();

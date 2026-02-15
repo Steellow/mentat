@@ -8,10 +8,9 @@
 </head>
 <body>
   <div class="container">
+    <p><a href="index.html" class="back-link">← back</a></p>
     <h1>Settings</h1>
     <div class="divider"><div class="timer-progress"></div></div>
-
-    <p><a href="index.html" class="back-link">← back</a></p>
 
     <section class="stats-section">
       <h2>Key Bindings</h2>
@@ -70,6 +69,15 @@
 
       <button onclick="clearBindings()" class="clear-btn">Clear All</button>
     </section>
+
+    <section class="stats-section">
+      <h2>Debug Mode</h2>
+      <p class="settings-desc">Infinite time, manual difficulty controls, detailed stats</p>
+      <label class="debug-toggle-label">
+        <input type="checkbox" id="debug-checkbox" onchange="toggleDebug()">
+        <span>Enable debug mode</span>
+      </label>
+    </section>
   </div>
 
   <script>
@@ -119,6 +127,14 @@
       document.querySelectorAll('.keybind-input').forEach(input => {
         input.value = '';
       });
+    }
+
+    // Debug mode toggle
+    const debugCheckbox = document.getElementById('debug-checkbox');
+    debugCheckbox.checked = localStorage.getItem('debugMode') === 'true';
+
+    function toggleDebug() {
+      localStorage.setItem('debugMode', debugCheckbox.checked);
     }
   </script>
 </body>

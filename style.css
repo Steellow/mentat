@@ -16,6 +16,7 @@ body {
 }
 
 .container {
+  position: relative;
   max-width: 500px;
   width: 100%;
   line-height: 1.6;
@@ -115,15 +116,22 @@ button:hover {
   text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
 }
 
-.stats-link {
-  color: #666;
-  font-size: 0.75em;
-  margin-left: 0.5em;
+.nav-icons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 0.75em;
+}
+
+.nav-icons a {
+  color: #444;
   text-decoration: none;
+  font-size: 1.2em;
   transition: color 0.2s;
 }
 
-.stats-link:hover {
+.nav-icons a:hover {
   color: #ff3333;
 }
 
@@ -144,7 +152,7 @@ button:hover {
 
 .stats-section h2 {
   color: #ff3333;
-  font-size: 0.85em;
+  font-size: 1.1em;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -194,8 +202,8 @@ button:hover {
 }
 
 .last-score {
-  color: #666;
-  margin-bottom: 1em;
+  color: #fff;
+  margin-bottom: 0.5em;
 }
 
 .delta-up {
@@ -219,22 +227,6 @@ button:hover {
   border: 1px dashed #ff9900;
   background-color: rgba(255, 153, 0, 0.05);
   color: #ff9900;
-  font-size: 0.85em;
-}
-
-#debug-toggle {
-  border: none;
-  background: none;
-  padding: 0;
-  margin-top: 1.5em;
-}
-
-#debug-toggle label {
-  cursor: pointer;
-  border: 1px dashed #ff9900;
-  background-color: rgba(255, 153, 0, 0.05);
-  padding: 0.5em 0.75em;
-  display: inline-block;
   font-size: 0.85em;
 }
 
@@ -340,6 +332,20 @@ button:hover {
 .clear-btn:hover {
   border-color: #ff3333;
   color: #ff3333;
+}
+
+.debug-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  cursor: pointer;
+  color: #ff9900;
+  font-size: 0.9em;
+  padding: 0.5em 0;
+}
+
+.debug-toggle-label input[type="checkbox"] {
+  accent-color: #ff9900;
 }
 
 /* Easter egg */

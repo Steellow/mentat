@@ -54,10 +54,11 @@
 
 - Custom key bindings for number input (useful without numpad)
 - Key bindings stored in localStorage as `keyBindings` object
+- Debug mode toggle
 
 ## Debug Mode
 
-- Toggle via `DEBUG` constant in JavaScript
+- Toggle via settings page (stored in localStorage as `debugMode`)
 - Shows both addition and subtraction difficulties
 - Shows delta changes with operation indicator
 - Infinite time (no countdown)
