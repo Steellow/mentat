@@ -34,6 +34,10 @@
         <div>Subtraction: <span id="debug-subtraction">1.0</span></div>
         <div><span id="debug-delta"></span></div>
         <div class="debug-controls">
+          <label><input type="checkbox" id="debug-addition-enabled" checked> +</label>
+          <label><input type="checkbox" id="debug-subtraction-enabled" checked> −</label>
+        </div>
+        <div class="debug-controls">
           <button onclick="adjustDifficulty(-1)" class="debug-btn">-1</button>
           <button onclick="adjustDifficulty(1)" class="debug-btn">+1</button>
           <button onclick="endGame()" class="debug-btn">End Game</button>
@@ -57,6 +61,7 @@
     let startingAdditionDifficulty = additionDifficulty;
     let startingSubtractionDifficulty = subtractionDifficulty;
     let currentPuzzleDifficulty = 1.0;
+    let isEasyProblem = false;
     let problemStartTime = 0;
     let DEBUG = localStorage.getItem('debugMode') === 'true';
     const TARGET_TIME = 4;
@@ -133,13 +138,24 @@
     }
 
     function generateProblem() {
-      // Randomly pick operation
-      currentOperation = Math.random() < 0.5 ? '+' : '-';
+      // Randomly pick operation (respecting debug filters)
+      const addEnabled = !DEBUG || document.getElementById('debug-addition-enabled').checked;
+      const subEnabled = !DEBUG || document.getElementById('debug-subtraction-enabled').checked;
+
+      if (addEnabled && subEnabled) {
+        currentOperation = Math.random() < 0.5 ? '+' : '-';
+      } else if (addEnabled) {
+        currentOperation = '+';
+      } else if (subEnabled) {
+        currentOperation = '-';
+      } else {
+        currentOperation = '+'; // fallback if both unchecked
+      }
       const difficulty = getCurrentDifficulty();
 
-      // 10% chance of easy problem
-      const isEasyProblem = Math.random() < 0.1;
-      currentPuzzleDifficulty = isEasyProblem ? 1.0 : difficulty;
+      // 10% chance of easy problem (half current difficulty)
+      isEasyProblem = Math.random() < 0.1;
+      currentPuzzleDifficulty = isEasyProblem ? Math.max(1, difficulty / 2) : difficulty;
 
       const minNum = 1 + Math.floor(currentPuzzleDifficulty);
       const maxNum = 5 + Math.floor(currentPuzzleDifficulty * 2);
@@ -152,14 +168,14 @@
 
       numbers = [num1, num2];
 
-      if (currentOperation === '+') {
-        // Addition-specific modifiers
-        // 10% chance: three-number addition
-        if (Math.random() < 0.1) {
-          const num3 = Math.floor(Math.random() * maxNum) + 1;
-          numbers.push(num3);
-        }
+      // 10% chance: three-number problem
+      const isThreeNumber = Math.random() < 0.1;
+      if (isThreeNumber) {
+        const num3 = Math.floor(Math.random() * maxNum) + 1;
+        numbers.push(num3);
+      }
 
+      if (currentOperation === '+') {
         // 10% chance: challenge multiplier (double one number)
         if (Math.random() < 0.1) {
           const idx = Math.floor(Math.random() * numbers.length);
@@ -205,12 +221,23 @@
           }
         }
 
-        // Ensure positive non-zero result after modifiers
-        if (numbers[0] <= numbers[1]) {
-          numbers[0] = numbers[1] + 1;
+        // 10% chance: negative result
+        const allowNegative = Math.random() < 0.1;
+        const subtractTotal = numbers.slice(1).reduce((sum, n) => sum + n, 0);
+
+        if (allowNegative) {
+          // Ensure negative result
+          if (numbers[0] >= subtractTotal) {
+            numbers[0] = Math.max(1, subtractTotal - Math.floor(Math.random() * maxNum) - 1);
+          }
+        } else {
+          // Ensure positive result
+          if (numbers[0] <= subtractTotal) {
+            numbers[0] = subtractTotal + Math.floor(Math.random() * maxNum) + 1;
+          }
         }
-        correctAnswer = numbers[0] - numbers[1];
-        document.getElementById('problem-text').textContent = numbers[0] + ' - ' + numbers[1];
+        correctAnswer = numbers[0] - subtractTotal;
+        document.getElementById('problem-text').textContent = numbers[0] + ' - ' + numbers.slice(1).join(' - ');
       }
 
       document.getElementById('answer').value = '';
@@ -224,20 +251,13 @@
         const difficulty = getCurrentDifficulty();
 
         // Smooth difficulty adjustment
-        const puzzleRatio = currentPuzzleDifficulty / difficulty;
         const timeDelta = elapsed - TARGET_TIME; // negative = fast, positive = slow
         const timeMultiplier = Math.max(-1, Math.min(1, -timeDelta / 3));
-        const baseAdjustment = 0.25 * timeMultiplier;
+        let delta = 0.25 * timeMultiplier;
 
-        let delta = 0;
-        if (baseAdjustment > 0) {
-          // Only increase difficulty if puzzle was at least half current difficulty
-          if (puzzleRatio >= 0.5) {
-            delta = baseAdjustment * puzzleRatio;
-          }
-        } else {
-          // Always allow decreases
-          delta = baseAdjustment;
+        // Easy problems never increase difficulty
+        if (isEasyProblem && delta > 0) {
+          delta = 0;
         }
 
         // Apply delta to correct difficulty

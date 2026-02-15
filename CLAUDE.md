@@ -37,10 +37,11 @@
 - Operation randomly selected (50/50 addition/subtraction)
 - Subtraction generates answer first (minNum to maxNum*2), then constructs num1 = answer + num2
 - 10% chance modifiers (each rolled independently):
-  - Easy problem: use base difficulty (1.0) instead of current
-  - Three-number addition (addition only): adds a third number
+  - Easy problem: uses half current difficulty (minimum 1.0), never increases level
+  - Three-number problem: adds a third number (works on both + and -)
   - Challenge multiplier: doubles one random number
   - Round number anchor: replaces one number with 10, 20, 25, 50, or 100
+  - Negative result (subtraction only): answer is a negative number
 
 ## Architecture
 

@@ -243,6 +243,14 @@ button:hover {
   display: flex;
   gap: 0.5em;
   margin-top: 0.5em;
+  align-items: center;
+}
+
+.debug-controls label {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  cursor: pointer;
 }
 
 .debug-btn {
