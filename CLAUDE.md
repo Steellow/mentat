@@ -16,6 +16,7 @@
 - Play again option after game ends
 - Stats page with top 10 scores, total puzzles solved, and level details
 - Post-game response time analysis with ASCII bar chart
+- "New record!" rainbow animation when beating high score
 
 ## Difficulty System
 
@@ -78,6 +79,7 @@
 - Infinite time (no countdown)
 - Manual +1/-1 difficulty buttons (affects current operation)
 - End Game button
+- High scores are NOT saved in debug mode (prevents unfair scores)
 
 ## UI Style
 
