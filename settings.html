@@ -19,16 +19,16 @@
       <div class="keybind-grid">
         <div class="keybind-row">
           <label class="keybind-item">
-            <span class="keybind-num">1</span>
-            <input type="text" maxlength="1" class="keybind-input" data-num="1">
+            <span class="keybind-num">7</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="7">
           </label>
           <label class="keybind-item">
-            <span class="keybind-num">2</span>
-            <input type="text" maxlength="1" class="keybind-input" data-num="2">
+            <span class="keybind-num">8</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="8">
           </label>
           <label class="keybind-item">
-            <span class="keybind-num">3</span>
-            <input type="text" maxlength="1" class="keybind-input" data-num="3">
+            <span class="keybind-num">9</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="9">
           </label>
         </div>
         <div class="keybind-row">
@@ -47,22 +47,27 @@
         </div>
         <div class="keybind-row">
           <label class="keybind-item">
-            <span class="keybind-num">7</span>
-            <input type="text" maxlength="1" class="keybind-input" data-num="7">
+            <span class="keybind-num">1</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="1">
           </label>
           <label class="keybind-item">
-            <span class="keybind-num">8</span>
-            <input type="text" maxlength="1" class="keybind-input" data-num="8">
+            <span class="keybind-num">2</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="2">
           </label>
           <label class="keybind-item">
-            <span class="keybind-num">9</span>
-            <input type="text" maxlength="1" class="keybind-input" data-num="9">
+            <span class="keybind-num">3</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="3">
           </label>
         </div>
         <div class="keybind-row">
+          <span class="keybind-spacer"></span>
           <label class="keybind-item">
             <span class="keybind-num">0</span>
             <input type="text" maxlength="1" class="keybind-input" data-num="0">
+          </label>
+          <label class="keybind-item">
+            <span class="keybind-num">⌫</span>
+            <input type="text" maxlength="1" class="keybind-input" data-num="backspace">
           </label>
         </div>
       </div>
@@ -94,6 +99,11 @@
         }
       }
 
+      // Select text on focus for easy replacement
+      input.addEventListener('focus', () => {
+        input.select();
+      });
+
       // Save on input
       input.addEventListener('input', () => {
         const key = input.value.toLowerCase();
@@ -115,6 +125,13 @@
         // Set new binding
         if (key) {
           keyBindings[key] = num;
+
+          // Move to next input
+          const inputs = Array.from(document.querySelectorAll('.keybind-input'));
+          const currentIndex = inputs.indexOf(input);
+          if (currentIndex < inputs.length - 1) {
+            inputs[currentIndex + 1].focus();
+          }
         }
 
         localStorage.setItem('keyBindings', JSON.stringify(keyBindings));

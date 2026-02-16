@@ -70,6 +70,8 @@
 ## Settings
 
 - Custom key bindings for number input (useful without numpad)
+- Includes backspace binding for erasing digits
+- Key bindings displayed in numpad layout (7-8-9 at top)
 - Key bindings stored in localStorage as `keyBindings` object
 - Debug mode toggle
 

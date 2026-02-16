@@ -362,6 +362,10 @@ button:hover {
   margin-bottom: 0.5em;
 }
 
+.keybind-spacer {
+  width: calc(1em + 0.5em + 2.5em);
+}
+
 .keybind-item {
   display: flex;
   align-items: center;

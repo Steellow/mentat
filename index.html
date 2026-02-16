@@ -87,8 +87,12 @@
       if (keyBindings[key]) {
         event.preventDefault();
         const input = document.getElementById('answer');
-        input.value += keyBindings[key];
-        checkAnswer();
+        if (keyBindings[key] === 'backspace') {
+          input.value = input.value.slice(0, -1);
+        } else {
+          input.value += keyBindings[key];
+          checkAnswer();
+        }
       }
     }
 
