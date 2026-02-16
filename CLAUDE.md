@@ -37,11 +37,14 @@
 - Second number has wider range: 1 to max (more variability)
 - Subtraction generates answer first (minNum to maxNum*2), then constructs num1 = answer + num2
 
-### Multiplication/Division
+### Multiplication
 - Smaller numbers to match addition difficulty: min = 2 + floor(diff/3), max = 4 + floor(diff/2)
-- Both numbers use minNum (no trivial ×1 or ÷1 problems)
-- Division answer range is wider (minNum to maxNum*2) for more challenge
-- Division generates answer and divisor, computes dividend (clean integer division)
+- Both numbers use minNum (no trivial ×1 problems)
+
+### Division
+- Even smaller numbers (division is cognitively harder): min = 2 + floor(diff/5), max = 3 + floor(diff/3)
+- Both answer and divisor use same range (minNum to maxNum)
+- Generates answer and divisor, computes dividend (clean integer division)
 
 ### Operation Selection
 - All 4 operations randomly selected (equal probability)

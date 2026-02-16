@@ -201,10 +201,14 @@
 
       // Number scaling differs by operation type
       let minNum, maxNum;
-      if (currentOperation === '×' || currentOperation === '÷') {
-        // Multiplication/division use smaller numbers
+      if (currentOperation === '×') {
+        // Multiplication uses smaller numbers
         minNum = 2 + Math.floor(currentPuzzleDifficulty / 3);
         maxNum = 4 + Math.floor(currentPuzzleDifficulty / 2);
+      } else if (currentOperation === '÷') {
+        // Division uses even smaller numbers (division is cognitively harder)
+        minNum = 2 + Math.floor(currentPuzzleDifficulty / 5);
+        maxNum = 3 + Math.floor(currentPuzzleDifficulty / 3);
       } else {
         // Addition/subtraction
         minNum = 1 + Math.floor(currentPuzzleDifficulty);
@@ -311,9 +315,7 @@
 
       } else if (currentOperation === '÷') {
         // Division: generate answer and divisor, compute dividend
-        // Answer range is wider (up to maxNum * 2) to make division harder
-        const answerMax = maxNum * 2;
-        const answer = Math.floor(Math.random() * (answerMax - minNum + 1)) + minNum;
+        const answer = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
         const divisor = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
         const dividend = answer * divisor;
 
