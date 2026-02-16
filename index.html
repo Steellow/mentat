@@ -365,7 +365,9 @@
         const adjustedTargetTime = TARGET_TIME * hardMultiplier;
         const timeDelta = elapsed - adjustedTargetTime; // negative = fast, positive = slow
         const timeMultiplier = Math.max(-1, Math.min(1, -timeDelta / 3));
-        let delta = 0.25 * timeMultiplier;
+        // Scale adjustments higher at low levels (1.9x at level 1, 1x at level 10+)
+        const levelMultiplier = Math.max(1, 1 + (10 - difficulty) / 10);
+        let delta = 0.25 * timeMultiplier * levelMultiplier;
 
         // Easy problems never increase difficulty
         if (isEasyProblem && delta > 0) {

@@ -26,7 +26,8 @@
 - Target answer time: 4 seconds (scales with hard multiplier)
 - Smooth scaling based on answer time:
   - Time multiplier = clamp((targetTime - elapsed) / 3, -1, 1)
-  - Adjustment = 0.25 * timeMultiplier
+  - Level multiplier = max(1, 1 + (10 - difficulty) / 10) — faster climbing at low levels
+  - Adjustment = 0.25 * timeMultiplier * levelMultiplier
 - Easy problems never increase difficulty
 - Points per correct answer = floor(difficulty) * hardMultiplier
 
