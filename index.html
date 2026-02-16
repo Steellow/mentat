@@ -78,6 +78,7 @@
     let problemStartTime = 0;
     let DEBUG = localStorage.getItem('debugMode') === 'true';
     let gameResponseTimes = [];
+    let previousAnswer = null;
     const TARGET_TIME = 4;
     const GAME_DURATION = 60;
 
@@ -129,6 +130,7 @@
       score = 0;
       timeLeft = 60;
       gameResponseTimes = [];
+      previousAnswer = null;
       startingAdditionDifficulty = additionDifficulty;
       startingSubtractionDifficulty = subtractionDifficulty;
       startingMultiplicationDifficulty = multiplicationDifficulty;
@@ -323,6 +325,13 @@
         correctAnswer = answer;
         document.getElementById('problem-text').textContent = dividend + ' ÷ ' + divisor;
       }
+
+      // Avoid same answer twice in a row
+      if (correctAnswer === previousAnswer) {
+        generateProblem();
+        return;
+      }
+      previousAnswer = correctAnswer;
 
       document.getElementById('answer').value = '';
       problemStartTime = Date.now();

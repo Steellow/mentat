@@ -49,6 +49,7 @@
 ### Operation Selection
 - All 4 operations randomly selected (equal probability)
 - Debug mode allows filtering which operations appear
+- Same answer never appears twice in a row (regenerates if needed)
 
 ### 10% Chance Modifiers (rolled independently)
 - Easy problem: uses half current difficulty (minimum 1.0), never increases level
