@@ -87,6 +87,24 @@
     const TARGET_TIME = 4;
     const GAME_DURATION = 60;
 
+    const _t = [
+      [0, 'bm9vYg=='],
+      [10, 'c2VucGFp'],
+      [15, 'c2Vuc2Vp'],
+      [20, 'Z2VuaXVz'],
+      [30, 'Z2FsYXh5IGJyYWlu'],
+      [40, 'd2l6YXJk'],
+      [50, 'bWVudGF0']
+    ];
+    const _d = s => atob(s);
+
+    function getTitle(level) {
+      for (let i = _t.length - 1; i >= 0; i--) {
+        if (level >= _t[i][0]) return _d(_t[i][1]);
+      }
+      return _d(_t[0][1]);
+    }
+
     function handleKeyBinding(event) {
       const key = event.key.toLowerCase();
       if (keyBindings[key]) {
@@ -427,24 +445,6 @@
           deltaEl.classList.remove('visible');
         }, 800);
       }
-    }
-
-    const _t = [
-      [0, 'bm9vYg=='],
-      [10, 'c2VucGFp'],
-      [15, 'c2Vuc2Vp'],
-      [20, 'Z2VuaXVz'],
-      [30, 'Z2FsYXh5IGJyYWlu'],
-      [40, 'd2l6YXJk'],
-      [50, 'bWVudGF0']
-    ];
-    const _d = s => atob(s);
-
-    function getTitle(level) {
-      for (let i = _t.length - 1; i >= 0; i--) {
-        if (level >= _t[i][0]) return _d(_t[i][1]);
-      }
-      return _d(_t[0][1]);
     }
 
     function updateLevelDisplay() {
