@@ -22,7 +22,8 @@
 
 - Separate difficulty for all 4 operations (each starts at 1.0, no upper cap)
 - All difficulties persisted to localStorage
-- Main page shows average level (floor of average of all 4)
+- Main page shows average level (floor of average of all 4) with title
+- Titles: noob (0-9), senpai (10-14), sensei (15-19), genius (20-29), galaxy brain (30-39), wizard (40-49), mentat (50+)
 - Target answer time: 4 seconds (scales with hard multiplier)
 - Smooth scaling based on answer time:
   - Time multiplier = clamp((targetTime - elapsed) / 3, -1, 1)

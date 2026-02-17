@@ -17,7 +17,11 @@
 
     <div id="start-screen">
       <p>Solve as many problems as you can in 1 minute. Difficulty increases automatically (if you're fast).</p>
-      <p class="level">Level: <span id="current-level">1</span> <span id="level-delta"></span></p>
+      <p class="level">Level: <span id="current-level">1</span> <span id="current-title" class="title" onclick="toggleTitlePopup()">(noob)</span> <span id="level-delta"></span></p>
+      <div id="title-popup" class="stats-popup hidden">
+        <div class="popup-header">Titles <span class="popup-close" onclick="toggleTitlePopup()">×</span></div>
+        <table id="title-table" class="title-table"></table>
+      </div>
       <p id="last-score" class="last-score hidden">Last score: <span id="last-score-value">0</span> <span id="new-record" class="new-record hidden">New record!</span> <span id="stats-icon" class="stats-icon" onclick="toggleStatsPopup()">▦</span></p>
       <div id="stats-popup" class="stats-popup hidden">
         <div class="popup-header">Response Times <span class="popup-close" onclick="toggleStatsPopup()">×</span></div>
@@ -77,6 +81,7 @@
     let activeModifiers = [];
     let problemStartTime = 0;
     let DEBUG = localStorage.getItem('debugMode') === 'true';
+    let highestLevel = parseInt(localStorage.getItem('highestLevel')) || 0;
     let gameResponseTimes = [];
     let previousAnswer = null;
     const TARGET_TIME = 4;
@@ -424,8 +429,51 @@
       }
     }
 
+    function getTitle(level) {
+      if (level >= 50) return 'mentat';
+      if (level >= 40) return 'wizard';
+      if (level >= 30) return 'galaxy brain';
+      if (level >= 20) return 'genius';
+      if (level >= 15) return 'sensei';
+      if (level >= 10) return 'senpai';
+      return 'noob';
+    }
+
     function updateLevelDisplay() {
-      document.getElementById('current-level').textContent = Math.floor(getAverageLevel());
+      const level = Math.floor(getAverageLevel());
+      document.getElementById('current-level').textContent = level;
+      document.getElementById('current-title').textContent = '(' + getTitle(level) + ')';
+
+      // Track highest level achieved
+      if (level > highestLevel) {
+        highestLevel = level;
+        localStorage.setItem('highestLevel', highestLevel);
+      }
+    }
+
+    function toggleTitlePopup() {
+      renderTitleTable();
+      document.getElementById('title-popup').classList.toggle('hidden');
+    }
+
+    function renderTitleTable() {
+      const titles = [
+        { range: '0-9', name: 'noob', minLevel: 0 },
+        { range: '10-14', name: 'senpai', minLevel: 10 },
+        { range: '15-19', name: 'sensei', minLevel: 15 },
+        { range: '20-29', name: 'genius', minLevel: 20 },
+        { range: '30-39', name: 'galaxy brain', minLevel: 30 },
+        { range: '40-49', name: 'wizard', minLevel: 40 },
+        { range: '50+', name: 'mentat', minLevel: 50 }
+      ];
+
+      const table = document.getElementById('title-table');
+      table.innerHTML = titles.map(t => {
+        const unlocked = highestLevel >= t.minLevel;
+        const name = unlocked ? t.name : '???';
+        const cls = unlocked ? '' : 'locked';
+        return `<tr class="${cls}"><td class="title-level">${t.range}</td><td>${name}</td></tr>`;
+      }).join('');
     }
 
     function updateTimerBar() {
