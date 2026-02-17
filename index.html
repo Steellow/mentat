@@ -374,19 +374,68 @@
 
       } else if (currentOperation === '×') {
         // Multiplication
-        correctAnswer = num1 * num2;
         numbers = [num1, num2];
-        document.getElementById('problem-text').textContent = num1 + ' × ' + num2;
+
+        // 10% chance: three-number problem
+        if (force3Nums || Math.random() < 0.1) {
+          const num3 = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
+          numbers.push(num3);
+          activeModifiers.push('3 nums');
+        }
+
+        // 10% chance: challenge multiplier (double one number)
+        if (forceX2 || Math.random() < 0.1) {
+          const idx = Math.floor(Math.random() * numbers.length);
+          numbers[idx] = numbers[idx] * 2;
+          activeModifiers.push('x2');
+        }
+
+        // 10% chance: round number anchor
+        if (forceRound || Math.random() < 0.1) {
+          const roundNumbers = [5, 10, 20, 25].filter(n => n >= minNum && n <= maxNum * 2);
+          if (roundNumbers.length > 0) {
+            const idx = Math.floor(Math.random() * numbers.length);
+            numbers[idx] = roundNumbers[Math.floor(Math.random() * roundNumbers.length)];
+            activeModifiers.push('round');
+          }
+        }
+
+        correctAnswer = numbers.reduce((prod, n) => prod * n, 1);
+        document.getElementById('problem-text').textContent = numbers.join(' × ');
 
       } else if (currentOperation === '÷') {
-        // Division: generate answer and divisor, compute dividend
-        const answer = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
-        const divisor = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
-        const dividend = answer * divisor;
+        // Division: generate answer and divisors, compute dividend
+        let answer = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
+        let divisors = [Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum];
 
-        numbers = [dividend, divisor];
+        // 10% chance: three-number problem (a ÷ b ÷ c)
+        if (force3Nums || Math.random() < 0.1) {
+          divisors.push(Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum);
+          activeModifiers.push('3 nums');
+        }
+
+        // 10% chance: challenge multiplier (double the answer)
+        if (forceX2 || Math.random() < 0.1) {
+          answer = answer * 2;
+          activeModifiers.push('x2');
+        }
+
+        // 10% chance: round number anchor (use round divisor)
+        if (forceRound || Math.random() < 0.1) {
+          const roundNumbers = [2, 5, 10].filter(n => n >= minNum);
+          if (roundNumbers.length > 0) {
+            const idx = Math.floor(Math.random() * divisors.length);
+            divisors[idx] = roundNumbers[Math.floor(Math.random() * roundNumbers.length)];
+            activeModifiers.push('round');
+          }
+        }
+
+        const divisorProduct = divisors.reduce((prod, n) => prod * n, 1);
+        const dividend = answer * divisorProduct;
+
+        numbers = [dividend, ...divisors];
         correctAnswer = answer;
-        document.getElementById('problem-text').textContent = dividend + ' ÷ ' + divisor;
+        document.getElementById('problem-text').textContent = dividend + ' ÷ ' + divisors.join(' ÷ ');
       }
 
       // Avoid same answer twice in a row
