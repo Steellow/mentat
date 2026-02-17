@@ -38,19 +38,36 @@
       <div class="score hidden">Score: <span id="score">0</span></div>
       <div id="debug-panel" class="debug">
         <span class="debug-label">DEBUG</span>
-        <div>Addition: <span id="debug-addition">1.0</span> | Subtraction: <span id="debug-subtraction">1.0</span></div>
-        <div>Multiplication: <span id="debug-multiplication">1.0</span> | Division: <span id="debug-division">1.0</span></div>
+        <div class="debug-row">
+          <label><input type="checkbox" id="debug-addition-enabled" checked></label>
+          <span>Addition: <span id="debug-addition">1.0</span></span>
+          <button onclick="adjustDifficulty(-1, '+')" class="debug-btn-sm">-</button>
+          <button onclick="adjustDifficulty(1, '+')" class="debug-btn-sm">+</button>
+        </div>
+        <div class="debug-row">
+          <label><input type="checkbox" id="debug-subtraction-enabled" checked></label>
+          <span>Subtraction: <span id="debug-subtraction">1.0</span></span>
+          <button onclick="adjustDifficulty(-1, '-')" class="debug-btn-sm">-</button>
+          <button onclick="adjustDifficulty(1, '-')" class="debug-btn-sm">+</button>
+        </div>
+        <div class="debug-row">
+          <label><input type="checkbox" id="debug-multiplication-enabled" checked></label>
+          <span>Multiplication: <span id="debug-multiplication">1.0</span></span>
+          <button onclick="adjustDifficulty(-1, '×')" class="debug-btn-sm">-</button>
+          <button onclick="adjustDifficulty(1, '×')" class="debug-btn-sm">+</button>
+        </div>
+        <div class="debug-row">
+          <label><input type="checkbox" id="debug-division-enabled" checked></label>
+          <span>Division: <span id="debug-division">1.0</span></span>
+          <button onclick="adjustDifficulty(-1, '÷')" class="debug-btn-sm">-</button>
+          <button onclick="adjustDifficulty(1, '÷')" class="debug-btn-sm">+</button>
+        </div>
         <div><span id="debug-delta"></span></div>
         <div id="debug-modifiers" class="debug-modifiers"></div>
         <div class="debug-controls">
-          <label><input type="checkbox" id="debug-addition-enabled" checked> +</label>
-          <label><input type="checkbox" id="debug-subtraction-enabled" checked> −</label>
-          <label><input type="checkbox" id="debug-multiplication-enabled" checked> ×</label>
-          <label><input type="checkbox" id="debug-division-enabled" checked> ÷</label>
+          <label><input type="checkbox" id="debug-freeze-level"> Freeze levels</label>
         </div>
         <div class="debug-controls">
-          <button onclick="adjustDifficulty(-1)" class="debug-btn">-1</button>
-          <button onclick="adjustDifficulty(1)" class="debug-btn">+1</button>
           <button onclick="endGame()" class="debug-btn">End Game</button>
         </div>
       </div>
@@ -397,6 +414,11 @@
           delta = 0;
         }
 
+        // Debug: freeze levels
+        if (DEBUG && document.getElementById('debug-freeze-level').checked) {
+          delta = 0;
+        }
+
         // Apply delta to correct difficulty
         switch (currentOperation) {
           case '+':
@@ -480,8 +502,8 @@
       document.getElementById('timer-progress').style.width = percentage + '%';
     }
 
-    function adjustDifficulty(amount) {
-      switch (currentOperation) {
+    function adjustDifficulty(amount, op) {
+      switch (op) {
         case '+':
           additionDifficulty = Math.max(1.0, additionDifficulty + amount);
           break;
@@ -495,8 +517,7 @@
           divisionDifficulty = Math.max(1.0, divisionDifficulty + amount);
           break;
       }
-      updateDebug(amount);
-      generateProblem();
+      updateDebug();
       document.getElementById('answer').focus();
     }
 
