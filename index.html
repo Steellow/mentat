@@ -429,14 +429,22 @@
       }
     }
 
+    const _t = [
+      [0, 'bm9vYg=='],
+      [10, 'c2VucGFp'],
+      [15, 'c2Vuc2Vp'],
+      [20, 'Z2VuaXVz'],
+      [30, 'Z2FsYXh5IGJyYWlu'],
+      [40, 'd2l6YXJk'],
+      [50, 'bWVudGF0']
+    ];
+    const _d = s => atob(s);
+
     function getTitle(level) {
-      if (level >= 50) return 'mentat';
-      if (level >= 40) return 'wizard';
-      if (level >= 30) return 'galaxy brain';
-      if (level >= 20) return 'genius';
-      if (level >= 15) return 'sensei';
-      if (level >= 10) return 'senpai';
-      return 'noob';
+      for (let i = _t.length - 1; i >= 0; i--) {
+        if (level >= _t[i][0]) return _d(_t[i][1]);
+      }
+      return _d(_t[0][1]);
     }
 
     function updateLevelDisplay() {
@@ -457,22 +465,13 @@
     }
 
     function renderTitleTable() {
-      const titles = [
-        { range: '0-9', name: 'noob', minLevel: 0 },
-        { range: '10-14', name: 'senpai', minLevel: 10 },
-        { range: '15-19', name: 'sensei', minLevel: 15 },
-        { range: '20-29', name: 'genius', minLevel: 20 },
-        { range: '30-39', name: 'galaxy brain', minLevel: 30 },
-        { range: '40-49', name: 'wizard', minLevel: 40 },
-        { range: '50+', name: 'mentat', minLevel: 50 }
-      ];
-
+      const ranges = ['0-9', '10-14', '15-19', '20-29', '30-39', '40-49', '50+'];
       const table = document.getElementById('title-table');
-      table.innerHTML = titles.map(t => {
-        const unlocked = highestLevel >= t.minLevel;
-        const name = unlocked ? t.name : '???';
+      table.innerHTML = _t.map((t, i) => {
+        const unlocked = highestLevel >= t[0];
+        const name = unlocked ? _d(t[1]) : '???';
         const cls = unlocked ? '' : 'locked';
-        return `<tr class="${cls}"><td class="title-level">${t.range}</td><td>${name}</td></tr>`;
+        return `<tr class="${cls}"><td class="title-level">${ranges[i]}</td><td>${name}</td></tr>`;
       }).join('');
     }
 
