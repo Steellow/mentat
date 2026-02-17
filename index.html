@@ -67,6 +67,15 @@
         <div class="debug-controls">
           <label><input type="checkbox" id="debug-freeze-level"> Freeze levels</label>
         </div>
+        <div class="debug-controls debug-force-modifiers">
+          <span>Force:</span>
+          <label><input type="checkbox" id="debug-force-easy"> easy</label>
+          <label><input type="checkbox" id="debug-force-hard"> hard</label>
+          <label><input type="checkbox" id="debug-force-3nums"> 3 nums</label>
+          <label><input type="checkbox" id="debug-force-x2"> x2</label>
+          <label><input type="checkbox" id="debug-force-round"> round</label>
+          <label><input type="checkbox" id="debug-force-negative"> negative</label>
+        </div>
         <div class="debug-controls">
           <button onclick="endGame()" class="debug-btn">End Game</button>
         </div>
@@ -231,8 +240,10 @@
 
       // 10% chance of easy problem (half current difficulty)
       // 10% chance of hard problem (2-5x current difficulty) - mutually exclusive with easy
-      isEasyProblem = Math.random() < 0.1;
-      const isHardProblem = !isEasyProblem && Math.random() < 0.1;
+      const forceEasy = DEBUG && document.getElementById('debug-force-easy').checked;
+      const forceHard = DEBUG && document.getElementById('debug-force-hard').checked;
+      isEasyProblem = forceEasy || (!forceHard && Math.random() < 0.1);
+      const isHardProblem = forceHard || (!isEasyProblem && Math.random() < 0.1);
       hardMultiplier = isHardProblem ? Math.floor(Math.random() * 4) + 2 : 1; // 2-5x
 
       if (isEasyProblem) {
@@ -274,26 +285,27 @@
 
       numbers = [num1, num2];
 
-      // 10% chance: three-number problem (addition/subtraction only)
-      if (currentOperation === '+' || currentOperation === '-') {
-        const isThreeNumber = Math.random() < 0.1;
-        if (isThreeNumber) {
+      const force3Nums = DEBUG && document.getElementById('debug-force-3nums').checked;
+      const forceX2 = DEBUG && document.getElementById('debug-force-x2').checked;
+      const forceRound = DEBUG && document.getElementById('debug-force-round').checked;
+      const forceNegative = DEBUG && document.getElementById('debug-force-negative').checked;
+
+      if (currentOperation === '+') {
+        // 10% chance: three-number problem
+        if (force3Nums || Math.random() < 0.1) {
           const num3 = Math.floor(Math.random() * maxNum) + 1;
           numbers.push(num3);
           activeModifiers.push('3 nums');
         }
-      }
-
-      if (currentOperation === '+') {
         // 10% chance: challenge multiplier (double one number)
-        if (Math.random() < 0.1) {
+        if (forceX2 || Math.random() < 0.1) {
           const idx = Math.floor(Math.random() * numbers.length);
           numbers[idx] = numbers[idx] * 2;
           activeModifiers.push('x2');
         }
 
         // 10% chance: round number anchor (replace one number with round number)
-        if (Math.random() < 0.1) {
+        if (forceRound || Math.random() < 0.1) {
           const roundNumbers = [10, 20, 25, 50, 100].filter(n => n <= maxNum * 2);
           if (roundNumbers.length > 0) {
             const idx = Math.floor(Math.random() * numbers.length);
@@ -317,15 +329,22 @@
 
         numbers = [num1, num2];
 
+        // 10% chance: three-number problem
+        if (force3Nums || Math.random() < 0.1) {
+          const num3 = Math.floor(Math.random() * maxNum) + 1;
+          numbers.push(num3);
+          activeModifiers.push('3 nums');
+        }
+
         // 10% chance: challenge multiplier (double one number)
-        if (Math.random() < 0.1) {
+        if (forceX2 || Math.random() < 0.1) {
           const idx = Math.floor(Math.random() * numbers.length);
           numbers[idx] = numbers[idx] * 2;
           activeModifiers.push('x2');
         }
 
         // 10% chance: round number anchor
-        if (Math.random() < 0.1) {
+        if (forceRound || Math.random() < 0.1) {
           const roundNumbers = [10, 20, 25, 50, 100].filter(n => n <= maxNum * 2);
           if (roundNumbers.length > 0) {
             const idx = Math.floor(Math.random() * numbers.length);
@@ -335,7 +354,7 @@
         }
 
         // 10% chance: negative result
-        const allowNegative = Math.random() < 0.1;
+        const allowNegative = forceNegative || Math.random() < 0.1;
         const subtractTotal = numbers.slice(1).reduce((sum, n) => sum + n, 0);
 
         if (allowNegative) {
