@@ -65,6 +65,7 @@
 - `index.html` - Main game with inline JavaScript
 - `stats.html` - Stats page (top 10 scores, levels, total puzzles)
 - `settings.html` - Settings page (custom key bindings)
+- `practice.html` - Keybinding practice page (type random digit sequences)
 - `style.css` - Hacker/arcade dark theme styles
 - Two screens in index: main (start), game (toggled via CSS classes)
 
@@ -74,6 +75,7 @@
 - Includes backspace binding for erasing digits
 - Key bindings displayed in numpad layout (7-8-9 at top)
 - Key bindings stored in localStorage as `keyBindings` object
+- Practice keybindings mode: type 20 random digits as fast as possible
 - Debug mode toggle
 
 ## Debug Mode
